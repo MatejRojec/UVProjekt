@@ -70,7 +70,7 @@ class Vektorji:
             raise Exception("Vektorski produkt je definiran le v treh dimenzijah.")
 
     def kot(self, other):
-        return
+        pass
     
     def ploščina_paralelograma(self, other):
         pass
@@ -117,6 +117,19 @@ class Matrika:
     def __eq__(self, other):
         return self.matrika == other.matrika
 
+    def __lt__(self, other):
+        if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
+            for i in self.matrika:
+                seznam = []
+                for j in self.matrika[0]:
+                    if self.matrika[i][j] > other.matrika[i][j]:
+                        seznam.append(True)
+                    else:
+                        seznam.append(False)
+                return all(seznam)
+        else:
+            raise Exception("Matrik različnih razsežnosti se ne da primerjati.")
+
     def trace(self):
         if self.kvadratna:
             trace = 0
@@ -137,6 +150,26 @@ class Matrika:
                 vrstica.append(self.matrika[j][i])
             transponiranka.append(vrstica)
         return transponiranka
+
+    def stohasticna_matrika(self):
+        for vrstica in self.matrika:
+            if not ali_je_stohasticen(vrstica):
+                return False
+        for vrstica in self.transponiranje():
+            if not ali_je_stohasticen(vrstica):
+                return False
+        return True
+
+def ali_je_stohasticen(vektor):
+    vsota = 0
+    for i in vektor:
+        if i > 1 or i < 0:
+            return False
+        vsota += i
+    if vsota != 1:
+        return False
+    return True
+    
 
 def identiteta(n):
     matrika = []
