@@ -234,7 +234,7 @@ class Matrika:
                 inverz.append(vrstica)
             return  inverz * 1 / self.determinante()
     
-    def psevdo_inverz(self):
+    def psevdoinverz(self):
         # posplošitev inverza za matrike, za katere je AA^T obrnljiva matrika
         m = self.transponiranje() * self.matrika  
         if m.singularnost_matrike():
@@ -252,7 +252,7 @@ class Matrika:
         elif len(y) != self.stevilostolpcev:
             raise Exception("Dolžine se ne ujemajo. ")
         else:
-            return self.psevdo_inverz() * b + (identiteta(self.stevilovrstic) - self.psevdo_inverz() * self.matrika) * y
+            return self.psevdoinverz() * b + (identiteta(self.stevilovrstic) - self.psevdoinverz() * self.matrika) * y
 
     def potenciaranje(self):
         pass
@@ -272,12 +272,10 @@ class Matrika:
     def permutacijska(self):
         pass
     
+    def cramer(self, b):
+        pass
 
-def permutacije(n):
-    pass
-
-def signatura(permutacija):
-    pass
+# Nekaj pomožnih funkcij in nekaj funkcij zgolj za zabavo
 
 def ali_je_stohasticen(vektor):
     vsota = 0
@@ -301,3 +299,45 @@ def identiteta(n):
                 vrstica.append(0)
         matrika.append(vrstica)
     return matrika
+
+class Permutacija:
+
+    def __init__(self, n, permutacija):
+        ''' Permutacija bo predstavljala poljuben slovar, ki je permutacija (uporabnik jo natipka)
+        Velikost je neodvisna od permutacije in bo omogačala, da uporabnik dobi vse permutacije
+        dolžine n. Torej dobi množico Sn, za nek n element naravnih števil.'''
+        self.permutacija = permutacija
+        self.velikost = n
+        self.jepermutacija = None
+        self.dolzina = None
+        self.signatura = None
+
+    def mnozica_permutacij(self):
+    # Izpiše množico Sn t.j. množico vseh permutacij {1, 2, ..., n}
+        pass
+
+    def preverjanje_permutacije(self):
+    # Preveri ali je seznam permutacija ! To potem shrani v vrednost slef.jepermutacija
+        pass
+
+    def slika_permutacije(self, m):
+    # vrne m - ti elemnt permutacije 
+        pass
+        
+    def veckratno_slikanje_permutacije(self, m, r):
+    # vrne m - ti elemnt permutacije po r - kratnem slikanju 
+        pass
+
+    def dolzina_permutacije(self):
+     # vrne dolzino permutacije
+        pass
+
+    def cikel_v_permutaciji(self, m):
+    # Vrne cikel začenši z m
+        pass
+
+    def stevilo_inverzij(self):
+        pass
+
+    def sg(self):
+        pass
