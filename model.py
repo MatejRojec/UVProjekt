@@ -90,7 +90,7 @@ class Vektor:
         if self.stevilovrstic == 3 and len(tocka) == 3:
             return f'(x - {tocka[0]}) / {self.vektor[0]} = (y - {tocka[1]}) / {self.vektor[1]} = (z - {tocka[2]}) / {self.vektor[2]}'
         else:
-            raise Exception("Vektorj in točma morata imate oba le 3 komponente")
+            raise Exception("Vektorj in točma morata imate oba 3 komponente")
 
 
 class Matrika:
@@ -113,7 +113,7 @@ class Matrika:
                     pomozna.append(self.matrika[i][j] + other.matrika[i][j])
                 summation.append(pomozna)
         else:
-            raise Exception("Matriki se ne da zmnožiti, saj sta sešteti velikosti.")
+            raise Exception("Matriki se ne da zmnožiti, saj sta različni velikosti.")
 
     def __sub__(self, other):
         return self.matrika + (-1) * other.matrika
@@ -153,7 +153,7 @@ class Matrika:
         return transponiranka
 
     def produkt_matrike_s_skalarjem(self, other):
-        # Množenje matrike s skalarjem
+    # Množenje matrike s skalarjem
         if isinstance(other, int) or isinstance(other, float):
             produkt = []
             for i in range(self.stevilovrstic):
@@ -166,7 +166,7 @@ class Matrika:
             raise Exception("Si prepričan, da si matriko množil matriko s skalarjem?")
      
     def produkt_matrike_z_matriko(self, other):
-        # Množenje matrik 
+    # Množenje matrik 
         if self.stevilostolpcev == other.vrstice:
             tansponiraj = other.transponiranje() 
             produkt = []
@@ -180,17 +180,20 @@ class Matrika:
             raise Exception("Matrik se ne more zmnožiti.")
 
     def stohasticna_matrika(self):
-        for vrstica in self.matrika:
-            if not ali_je_stohasticen(vrstica):
-                return False
-        for vrstica in self.transponiranje():
-            if not ali_je_stohasticen(vrstica):
-                return False
-        return True
+        if not self.kvadratna():
+            return False
+        else:
+            for vrstica in self.matrika:
+                if not ali_je_stohasticen(vrstica):
+                    return False
+            for vrstica in self.transponiranje():
+                if not ali_je_stohasticen(vrstica):
+                    return False
+            return True
     
     def determinante(self):
-        # Determinanto bomo izračunali s pomočjo razvoja 
-        # Za to uporabimo rekurzivno zvezo
+    # Determinanto bomo izračunali s pomočjo razvoja 
+    # Za to uporabimo rekurzivno zvezo
 
         if not self.kvadratna:
             raise Exception("Determinanta pravokotnih matrik ni definirana.")
@@ -235,7 +238,7 @@ class Matrika:
             return  inverz * 1 / self.determinante()
     
     def psevdoinverz(self):
-        # posplošitev inverza za matrike, za katere je AA^T obrnljiva matrika
+    # posplošitev inverza za matrike, za katere je AA^T obrnljiva matrika 
         m = self.transponiranje() * self.matrika  
         if m.singularnost_matrike():
             raise Exception("Psevdo - inverz take matrike ne znam izračunati.")
@@ -243,8 +246,8 @@ class Matrika:
             return m.inverz() * self.transponiranje()
 
     def metoda_najmanjsih_kvadratov(self, b , y):
-        # izračuna neko rešitev sistema po metodi najmanjših kvadratov
-        # Sistem Ax = b, kjer je AA^T obrnljiva matrika
+    # izračuna neko rešitev sistema po metodi najmanjših kvadratov
+    # Sistem Ax = b, kjer je AA^T obrnljiva matrika
         if self.singularnost_matrike():
             return Exception("Takega sistema ne znam rešiti.")
         elif len(b) != self.stevilovrstic:
@@ -254,28 +257,81 @@ class Matrika:
         else:
             return self.psevdoinverz() * b + (identiteta(self.stevilovrstic) - self.psevdoinverz() * self.matrika) * y
 
-    def potenciaranje(self):
-        pass
+    def __pow__(self, k):
+    # Matriko mnozico samo s sabo k - krat, kjer je k naravno število, sicer
+    # bi morali pretvoriti v Jordanovo kanonično formo, kar je računsko zahtevno.
+        if not self.kvadratna():
+            raise Exception("Potenciranje je definirano le za kvadratne matrike.")
+        elif k < 0 or k % 1 != 0:
+            raise Exception("Število k more biti naravno število!")
+        elif k == 0:
+            identiteta(self.stevilostolpcev)
+        else:
+            M = self.matrika
+            for _ in range(k - 1):
+                M *= self.matrika
+            return M
+
+    def nenegativna(self):
+        for vrstica in self.matrika:
+            for element in vrstica:
+                if element < 0:
+                    return False
+        return True
 
     def reduciabilnost(self):
-        pass
+    # preveri ali je matrika reduciabilna 
+        if not self.kvadratna():
+            return False
+        elif not self.nenegativna():
+            return False
+        else:
+            return (identiteta(self.stevilostolpcev) + self.matrika) ** (self.stevilostolpcev - 1) > 0
 
     def normalnost_opratorja(self):
-        pass
+    # preveri normanost operatorja
+        if not self.kvadratna():
+            raise Exception("Normanost je definirana le za kvadratne matrike!")
+        else:
+            return self.matrika * self.transponiranje() == self.transponiranje() * self.matrika()
     
     def sebiadjugiranost_operatorja(self):
-        pass
+        if not self.normalnost_opratorja():
+            return False
+        else:
+            return self.matrika() == self.transponiranje()
 
     def unitarnost_operatorja(self):
-        pass
+        if not self.normalnost_opratorja():
+            return False
+        else:
+            return self.inverz() == self.transponiranje()
 
     def permutacijska(self):
-        pass
-    
-    def cramer(self, b):
-        pass
+        if not self.stohasticna_matrika():
+            return False
+        else:
+            for vrstica in self.matrika:
+                for element in vrstica:
+                    if element != 0 or element != 1:
+                        return False
+                return True
 
-# Nekaj pomožnih funkcij in nekaj funkcij zgolj za zabavo
+    def cramerjevo_pravilo(self, b):
+    # Naj bo A matrika, ki predstavlja sistem n enančb z n neznakami, če je A nesingularna lahko uporabimo sledeč postopek za izračun rešitve sistema
+        if self.singularnost_matrike():
+            raise Exception("Matrika more biti obrnljiva, sicer sistem ni enolično rešljiv")
+        elif len(b) != self.stevilostolpcev:
+            raise Exception("Dolžina vektorja b se mora ujemati s število vrstic oz. številom stolpcem matirike A!")
+        else: 
+            resitev = []
+            for element in range(self.stevilostolpcev):
+                M = self.transponiranje()
+                M = M[:element] + [b] + M[(element + 1):]
+                M = M.determinante() / self.determinante()
+                resitev.append(M)
+
+# Pomožni funkciji: 
 
 def ali_je_stohasticen(vektor):
     vsota = 0
@@ -299,6 +355,7 @@ def identiteta(n):
                 vrstica.append(0)
         matrika.append(vrstica)
     return matrika
+
 
 class Permutacija:
 
