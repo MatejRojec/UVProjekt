@@ -200,7 +200,7 @@ class Matrika:
         elif self.stevilovrstic == 1:
             return self.matrika[0][0]
         elif self.stevilovrstic == 2:
-            return self.matrika[1][1] * self.matrika[0][1] - self.matrika[1][0] * self.matrika[0][1]
+            return self.matrika[1][1] * self.matrika[0][0] - self.matrika[1][0] * self.matrika[0][1]
         else:
             M = self.matrika
             determinanta = 0
@@ -367,34 +367,100 @@ class Permutacija:
         self.velikost = n
         self.jepermutacija = None
         self.dolzina = None
-        self.signatura = None
-
-    def mnozica_permutacij(self):
-    # Izpiše množico Sn t.j. množico vseh permutacij {1, 2, ..., n}
-        pass
 
     def preverjanje_permutacije(self):
     # Preveri ali je seznam permutacija ! To potem shrani v vrednost slef.jepermutacija
-        pass
+        if set(self.permutacija.keys()) == set(range(1, len(self.permutacija.keys()) + 1)):
+            if set(self.permutacija.values()) == set(self.permutacija.keys()):
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    def slika_permutacije(self, m):
-    # vrne m - ti elemnt permutacije 
-        pass
-        
-    def veckratno_slikanje_permutacije(self, m, r):
-    # vrne m - ti elemnt permutacije po r - kratnem slikanju 
-        pass
+    def je_permutacija(self):
+        self.jepermutacija = self.preverjanje_permutacije()
 
     def dolzina_permutacije(self):
      # vrne dolzino permutacije
-        pass
+        self.dolzina = len(self.permutacija)
+
+    def enkratna_slika_permutacije(self, k):
+    # vrne m - ti elemnt permutacije 
+    # Izpiše množico Sn t.j. množico vseh bijekcij {1, 2, ..., n}
+        if k > self.dolzina:
+            raise Exception("Število k mora biti kvečjemu število k!")
+        elif k % 1 != 0 or k < 0:
+            raise Exception("Število k mora biti naravno")
+        else:
+            return self.permutacija.get(k)
+
+    def veckratno_slikanje_permutacije(self, k, r):
+    # vrne zaporedje slik po r - kratnem slikanju k - tega elementa.
+        if r > self.dolzina:
+            raise Exception("Število r mora biti kvečjemu število r!")
+        elif r < 0 or r % 1 != 0:
+            raise Exception("Število r mora biti naravno število!")
+        else:
+            list_permutacij = []
+            while r + 1 != 0:
+                list_permutacij.append(k)
+                k = self.permutacija[k]
+                r -= 1 
+            return list_permutacij
+        
+    def veckratna_slika_permutacije(self, k, r):
+    # Vrne element po r - kratnem slikanju k - tega elementa
+        return self.veckratno_slikanje_permutacije(k, r)[-1]
+
+    def simetricna(self):
+        if self.velikost % 1 != 0 or self.velikost < 0:
+            raise Exception("VElikost mora biti naravno število !") 
+        return sn(self.permutacija) 
 
     def cikel_v_permutaciji(self, m):
     # Vrne cikel začenši z m
-        pass
+        seznam = [m]
+        n = self.permutacija[m]
+        while n != m:
+            seznam.append(n)
+            n = self.permutacija[n]
+        return seznam
+        
+    def cikli_v_permutaciji(self):
+    # vrne vse cikle v permutaciji
+        cikli = []
+        pomozna = set()
+        for x in range(1, len(self.permutacija) + 1):
+            if x not in pomozna:
+                cikel = self.cikel_v_permutaciji(x)
+                cikli.append(cikel)
+                pomozna.update(cikel)
+        return cikli
+
 
     def stevilo_inverzij(self):
-        pass
+        inverzije = 0
+        for element, sigma_element in enumerate(self.permutacija):
+            for _ in self.permutacija[(element + 1):]:
+                if _ < sigma_element:
+                    inverzije += 1
+        return inverzije
 
     def sg(self):
-        pass
+        if self.stevilo_inverzij() % 2 == 0:
+            return 1
+        else:
+            return -1
+
+def sn(n):
+# vrne množico Sn t.j. vse bijektic.
+    if n == 0:
+        return {()}
+    else:
+        sedajsne_per = sn(n - 1)
+        novejse_per = set()
+        for permutacija in sedajsne_per:
+            for i in range(len(permutacija) + 1):
+                novejse_per.add(permutacija[:i] + (n - 1, ) + permutacija[i:])
+        return novejse_per
