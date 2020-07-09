@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Permavulator</title>
+  </head>
+  <body>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permavulator</title>
+
+<link href="https://fonts.googleapis.com/css?family=Montserrat|Syncopate&display=swap"" rel="stylesheet">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permavulator</title>
+
+<link href="https://fonts.googleapis.com/css?family=Montserrat|Syncopate&display=swap"" rel="stylesheet">
+
+<style>
+    body{position: relative;
+        height: 100vh;
+        margin: 0; 
+        font-family: "Montserrat", sans-serif; 
+        background-color: #94e6f5d7}
+    h1  {font-family:"Montserrat", sans-serif; 
+        font-size: 35px; 
+        padding-top: 10px; 
+        padding-bottom: 40px}
+    h3  {font-family:"Montserrat", sans-serif; 
+        font-size: 30px; 
+        padding-top: 10px;}
+    h5 {font-family:"Montserrat", sans-serif;
+        font-size: 25px; 
+        padding-top: 10px;}
+    h4 {font-family: "Montserrat", sans-serif; 
+        font-size: 20px; 
+        padding-top: 10px; }
+    ul{display: table;
+      margin: 0 auto;}
+    button {
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+}
+    footer {font-family: "Montserrat", sans-serif;
+            position: absolute; 
+            bottom: 0; 
+            width: 100%; 
+            height: 2.5rem;}
+    #overlay {position: fixed; z-index: 1;}
+</style>
+</head>
+    <body>
+
+        <div class="container">
+
+            <div class="mx-auto" align="center" style="width: 300px;">
+              <h1><a href="/" style="color: #a414b1e0;">Permavulator!</a></h1>
+              </div>
+            
+            <div align="center">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <!-- Subdivizija za vektorje -->
+              <div class="btn-group-vertical" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", color: white;>
+                    Vektorji!
+                </button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a href="/addingv" class="btn btn-secondary">seštej</a>       
+                    <a href="/subtractingv" class="btn btn-secondary">odštej</a> 
+                    <a href="/equvelencev" class="btn btn-secondary">izenači</a>
+                    <a href="/comparev" class="btn btn-secondary">primerjaj</a>
+                    <a href="/norm" class="btn btn-secondary">izmeri</a>
+                    <a href="/scalarproduct" class="btn btn-secondary">zmnoži</a>
+                    <a href="/scalarmultiplicatoin" class="btn btn-secondary">zmnoži</a>
+                    <a href="/crossproduct" class="btn btn-secondary">vektorsko-zmnozi</a>
+                    <a href="/angle" class="btn btn-secondary">kot</a>
+                    <a href="/paralelogramarea" class="btn btn-secondary">ploščina-paralelograma</a>
+                    <a href="/paralelepipedvolume" class="btn btn-secondary">volumen_paralelepipeda</a>
+                    <a href="/piramidvolume" class="btn btn-secondary">volumen_piramide</a>
+                    <a href="/lineequasion" class="btn btn-secondary">napiši premico</a>
+                </div>
+            </div>
+              <!-- Subdivizija za računanje z matrikami. -->
+              <div class="btn-group-vertical" role="group">
+                <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Računanje z matrikami!
+                </button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a href="/addingm" class="btn btn-secondary">seštej</a>       
+                    <a href="/subtractingm" class="btn btn-secondary">odštej</a> 
+                    <a href="/equvelencem" class="btn btn-secondary">izenači</a>
+                    <a href="/comparem" class="btn btn-secondary">primerjaj</a>  
+                    <a href="/tracing" class="btn btn-secondary">traci</a> 
+                    <a href="/transposing" class="btn btn-secondary">transponiranka</a> 
+                    <a href="/power" class="btn btn-secondary">potenciranje</a> 
+                    <a href="/determenanting" class="btn btn-secondary">determinanta</a> 
+                    <a href="/inverting" class="btn btn-secondary">invertiraj</a> 
+                    <a href="/psevdoinverting" class="btn btn-secondary">najdi psevdoinverz</a> 
+                    <a href="/cramerrule" class="btn btn-secondary">reši sistem s pomočjo cramerjevega pravila</a> 
+                    <a href="/psevdoinverting" class="btn btn-secondary">najdi psevdoinverz</a> 
+                    <a href="/regresion" class="btn btn-secondary">poda neko rešitev sistema po metodi najmanjših kvadratov</a>
+                </div>
+            </div> 
+              <!-- Subdivizija za lastnosti matrik -->
+              <div class="btn-group-vertical" role="group">
+                <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Značaji matrik!
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                      <a class="dropdown-item" href="/doublestohastic">preverja dvojno stohastičnost matrike</a>
+                      <a class="dropdown-item" href="/permutasion">previ ali je matrika permutacijska</a>
+                      <a class="dropdown-item" href="/nonnegative">preverja nenegativnost matirke</a>
+                      <a class="dropdown-item" href="/reduciable">preverja reducirabilnost matrike</a>
+                      <a class="dropdown-item" href="/normaloperator">preverja normanost operatorja</a>
+                      <a class="dropdown-item" href="/ortogonalnost">preveri ortogonalnost</a>
+                    </div>
+                </div>
+
+              <!-- Subdivizija za permutacije.  -->
+              <div class="btn-group-vertical" role="group">
+                <button id="btnGroupDrop4" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Permutacije :) !
+                </button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a href="/onetimetransformationofanelement" class="btn btn-secondary">slika element</a>  
+                    <a href="/multipletransformationsofanelement" class="btn btn-secondary">množica slik elementa</a>  
+                    <a href="/simetricgroup" class="btn btn-secondary">poda množico bijektivnoih preslikav</a>  
+                    <a href="/permutacioncycle" class="btn btn-secondary">cikel v permutaciji</a>  
+                    <a href="/numberofinv" class="btn btn-secondary">število inverzij</a>  
+                    <a href="/signature" class="btn btn-secondary">signatura permutacije</a>   
+                </div>
+              </div> 
+    
+            </div>
+            </div>
+
+          {{ !base }}
+          
+    </body>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
