@@ -441,7 +441,7 @@ class Permutacija:
 
     def stevilo_inverzij(self):
         inverzije = 0
-        for element, sigma_element in enumerate(self.permutacija):
+        for element, sigma_element in enumerate(self.permutacija.values()):
             for _ in self.permutacija[(element + 1):]:
                 if _ < sigma_element:
                     inverzije += 1
@@ -462,5 +462,5 @@ def sn(n):
         novejse_per = set()
         for permutacija in sedajsne_per:
             for i in range(len(permutacija) + 1):
-                novejse_per.add(permutacija[:i] + (n - 1, ) + permutacija[i:])
+                novejse_per.add(permutacija[:i] + (n , ) + permutacija[i:])
         return novejse_per
