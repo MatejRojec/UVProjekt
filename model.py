@@ -6,7 +6,7 @@ class Vektor:
 
     def __init__(self, vektor):
         self.vektor = vektor
-        self.stevilovrstic = len(vektor)
+        self.stevilovrstic = len(self.vektor)
 
     def __repr__(self):
         return f'Vektor({self.vektor})'
@@ -16,6 +16,9 @@ class Vektor:
 
     def __getitem__(self, i):
         return self.vektor[i]
+
+    def __setitem__(self, i, l):
+        self.vektor[i] = l
     
     def __len__(self):
         return self.stevilovrstic
@@ -27,10 +30,17 @@ class Vektor:
                 nov_vektor.append(self.vektor[i] + other.vektor[i])
             return Vektor(nov_vektor)
         else:
-            raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da zmnožiti")
+            raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da sešteti.")
 
     def __sub__(self, other):
-        return self.vektor + (-1) * other.vektor
+        if self.stevilovrstic == other.stevilovrstic:
+            nov_vektor = []
+            for i in range(self.stevilovrstic):
+                nov_vektor.append(self.vektor[i] - other.vektor[i])
+            return Vektor(nov_vektor)
+        else:
+            raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da odšteti.")
+
 
     def __eq__(self, other):
         return self.vektor == other.vektor
@@ -48,20 +58,20 @@ class Vektor:
             raise Exception("Vektorjev različnih velikosti ne moremo primerjati.")
 
     def norma(self):
-        norma = None
-        for i in self.stevilovrstic:
-            norma += i ** 2
+        norma = 0
+        for i in range(self.stevilovrstic):
+            norma += self[i] ** 2
         return norma
     
     def skalarni_produkt(self, other):
     # Govorimo o standardem skalarnem produktu v R^n po komponentah
         if self.stevilovrstic == other.stevilovrstic:
-            produkt = None
-            for i in self.stevilovrstic:
-                produkt += self.vektor[i] * other.vektor[i]
+            produkt = 0
+            for i in range(self.stevilovrstic):
+                produkt += self[i] * other[i]
             return produkt
         else:
-            raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da.")
+            raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da skalarno zmožiti.")
      
     def mnozenje_vektorja_s_skalarjem(self, skalar):
         novi = []
@@ -77,12 +87,15 @@ class Vektor:
             novi[0] = s[1] * o[2] - o[1] * s[2]
             novi[1] = - s[0] * o[2] + o[0] * s[2]
             novi[2] = s[0] * o[1] - o[0] * s[1]
-            return novi
+            return Vektor(novi)
         else: 
             raise Exception("Vektorski produkt je definiran le v treh dimenzijah.")
 
     def kot(self, other):
-        return math.acos(self.skalarni_produkt(other) / (self.norma() * other.norma()))
+        if self.norma() == 0 or other.norma() == 0:
+            raise Exception("VEktorja morata biti neničelna.")
+        radiani = math.acos(self.skalarni_produkt(other) / (self.norma() * other.norma()))
+        return 180 / radiani
     
     def ploščina_paralelograma(self, other):
     # izračuna ploščino, ki ga omejujeta vektorja self in other 
@@ -401,9 +414,9 @@ def identiteta(n):
 
 def nicelna(n):
     matrika = []
-    for i in range(n):
+    for _ in range(n):
         vrstica = []
-        for j in range(n):
+        for _ in range(n):
             vrstica.append(0)
         matrika.append(vrstica)
     return Matrika(matrika)
