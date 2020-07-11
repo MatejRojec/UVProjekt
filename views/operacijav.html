@@ -1,0 +1,17 @@
+<!-- Za vpisovanje dveh vektorjev -->
+
+% rebase("osnovna.html")
+
+<form action={{ operacija }} method="POST">
+  <div class="form-group">
+    <label for="vektor1">Vpiši prvi vektor:</label>
+    <textarea class="form-control" id="vektor1" rows="1" name="vektor" placeholder="prvi vektor"></textarea>
+    <div align="center">
+    <p> {{ operator }} </p> 
+    </div>
+    <label for="vektor2">Vpiši drugi vektor:</label>
+    <textarea class="form-control" id="vektor2" rows="1" name="vektor2" placeholder="drugi vektor"></textarea>
+    <input type="submit" value={{ operiraj }}!>
+  </div>
+</form>
+

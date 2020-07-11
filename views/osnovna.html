@@ -47,15 +47,14 @@
       margin: 0 auto;}
     button {
       border: none;
-      color: white;
+      color: blue;
       padding: 15px 32px;
       text-align: center;
       text-decoration: none;
       display: inline-block;
       font-size: 16px;
       margin: 4px 2px;
-      cursor: pointer;
-}
+      cursor: pointer;}
     footer {font-family: "Montserrat", sans-serif;
             position: absolute; 
             bottom: 0; 
@@ -80,8 +79,8 @@
                     Vektorji!
                 </button>
                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <a href="/addingv" class="btn btn-secondary">seštej</a>       
-                    <a href="/subtractingv" class="btn btn-secondary">odštej</a> 
+                    <a href="/sestevanjev" class="btn btn-secondary">sestejv</a>       
+                    <a href="/odstevanjev" class="btn btn-secondary">odštej</a> 
                     <a href="/equvelencev" class="btn btn-secondary">izenači</a>
                     <a href="/comparev" class="btn btn-secondary">primerjaj</a>
                     <a href="/norm" class="btn btn-secondary">izmeri</a>
@@ -101,19 +100,18 @@
                     Računanje z matrikami!
                 </button>
                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <a href="/addingm" class="btn btn-secondary">seštej</a>       
-                    <a href="/subtractingm" class="btn btn-secondary">odštej</a> 
-                    <a href="/equvelencem" class="btn btn-secondary">izenači</a>
-                    <a href="/comparem" class="btn btn-secondary">primerjaj</a>  
-                    <a href="/tracing" class="btn btn-secondary">traci</a> 
-                    <a href="/transposing" class="btn btn-secondary">transponiranka</a> 
-                    <a href="/power" class="btn btn-secondary">potenciranje</a> 
-                    <a href="/determenanting" class="btn btn-secondary">determinanta</a> 
-                    <a href="/inverting" class="btn btn-secondary">invertiraj</a> 
-                    <a href="/psevdoinverting" class="btn btn-secondary">najdi psevdoinverz</a> 
-                    <a href="/cramerrule" class="btn btn-secondary">reši sistem s pomočjo cramerjevega pravila</a> 
-                    <a href="/psevdoinverting" class="btn btn-secondary">najdi psevdoinverz</a> 
-                    <a href="/regresion" class="btn btn-secondary">poda neko rešitev sistema po metodi najmanjših kvadratov</a>
+                    <a href="/sestevanjem" class="btn btn-secondary">sestej</a>       
+                    <a href="/odstevanjem" class="btn btn-secondary">odštej</a> 
+                    <a href="/izenacim" class="btn btn-secondary">izenači</a>
+                    <a href="/primerjam" class="btn btn-secondary">primerjaj</a>  
+                    <a href="/slede" class="btn btn-secondary">sled</a> 
+                    <a href="/determiniranje" class="btn btn-secondary">determinanta</a> 
+                    <a href="/transponiranje" class="btn btn-secondary">transponiranje</a> 
+                    <a href="/produkt" class="btn btn-secondary">produkt</a> 
+                    <a href="/power" class="btn btn-secondary">potenciraj</a> 
+                    <a href="/inverz" class="btn btn-secondary">inverz</a> 
+                    <a href="/psevdoinverz" class="btn btn-secondary">psevdoinverz</a> 
+                    <a href="/sistem" class="btn btn-secondary">sistem</a> 
                 </div>
             </div> 
               <!-- Subdivizija za lastnosti matrik -->
@@ -122,18 +120,19 @@
                         Značaji matrik!
                     </button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                      <a class="dropdown-item" href="/doublestohastic">preverja dvojno stohastičnost matrike</a>
-                      <a class="dropdown-item" href="/permutasion">previ ali je matrika permutacijska</a>
-                      <a class="dropdown-item" href="/nonnegative">preverja nenegativnost matirke</a>
-                      <a class="dropdown-item" href="/reduciable">preverja reducirabilnost matrike</a>
-                      <a class="dropdown-item" href="/normaloperator">preverja normanost operatorja</a>
-                      <a class="dropdown-item" href="/ortogonalnost">preveri ortogonalnost</a>
+                      <a class="dropdown-item" href="/dvojnostohasticna">dvojno stohastičnost matrika</a>
+                      <a class="dropdown-item" href="/permutacijskaa">permutacijska matrika</a>
+                      <a class="dropdown-item" href="/nenegativnost">nenegativnost matirke</a>
+                      <a class="dropdown-item" href="/reduciabilnost">reducirabilnost matrike</a>
+                      <a class="dropdown-item" href="/normalnost">normanost operatorja</a>
+                      <a class="dropdown-item" href="/unitarnost">unitarnost operatorja</a>
+                      <a class="dropdown-item" href="/sebiadjugiranost">sebiadjugiranost operatorja</a>
                     </div>
                 </div>
 
               <!-- Subdivizija za permutacije.  -->
               <div class="btn-group-vertical" role="group">
-                <button id="btnGroupDrop4" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Permutacije :) !
                 </button>
                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">

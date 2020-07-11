@@ -1,0 +1,13 @@
+<!-- Za eksponent matrike -->
+
+% rebase("osnovna.html")
+
+<form action={{ operacija }} method="POST">
+  <div class="form-group">
+    <p><label for="matrika">Vpiši matriko:</label></p>
+    <textarea class="form-control" id="matrika" rows="10" name="matrika" placeholder="matrika"></textarea>
+    <p><label for="eksponent">Vpiši eksponent:</label></p>
+    <textarea class="form-control" id="eksponent" rows="1" name="eksponent" placeholder="eksponent"></textarea>
+    <input type="submit" value={{ izracunaj }}!>
+  </div>
+</form>
