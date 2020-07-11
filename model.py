@@ -219,14 +219,9 @@ class Matrika:
     # Množenje matrik 
         elif isinstance(other, Matrika):
             if self.stevilostolpcev == other.stevilovrstic:
-                tansponiraj = other.transponiranje() 
-                produkt = []
-                for i in range(self.stevilovrstic):
-                    vrstica = []
-                    for j in range(self.stevilostolpcev):
-                        vrstica.append(sum([element[0] * element[1] for element in zip(self.matrika[i], tansponiraj.matrika[j])]))
-                    produkt.append(vrstica)
-            return Matrika(produkt)
+                return Matrika( 
+                [[sum(x * y for x,y in zip(self.stevilovrstic,other.stevilostolpcev)) 
+                for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
         else:
             raise Exception("Matrik se ne more zmnožiti.")
 
