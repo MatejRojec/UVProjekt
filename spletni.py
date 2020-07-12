@@ -20,16 +20,13 @@ def izrisi_matriko(matrika):
     return Matrika(matrika1)
 
 
-def izrise_permutacijo(permutacijia):
+def izrisi_permutacijo(permutacijia):
     v = permutacijia.split(' ')
     v = v = [float(e) for e in v]
-    sl = set()
-    for i in range(len(v)):
-        sl.add(i)
-        sl[i] = v[i]
-    return sl
-
-# Izriše začetno stran
+    sl = {}
+    for i in range(1, int(len(v) + 1)):
+        sl[i] = v[(i - 1)]
+    return Permutacija(sl)
 
 @bottle.get("/")
 def main_page():
@@ -451,5 +448,116 @@ def enacbapremicev():
 
 # PERMUTACIJE
 
+@bottle.get("/preverjanjepermutacije")
+def preverjanjepermutacije():
+    return bottle.template("permutacije.html", operacija="/preverjanjepermutacijep", izracunaj="permutacija?")
 
-bottle.run(reloader=True, debug=True) 
+@bottle.post("/preverjanjepermutacijep")
+def preverjanjepermutacijep():
+    permutacijar = bottle.request.forms["permutacija"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    lx = permutacija.preverjanje_permutacije()
+    if lx:
+        return bottle.template("last.html", lastnost="JEEEEEE permutacija")
+    else:
+        return bottle.template("last.html", lastnost="Ni permutacija")
+
+@bottle.get("/enkratnaslikapermutacije")
+def enkratnaslikapermutacije():
+    return bottle.template("permutacija2.html", operacija="/enkratnaslikapermutacijep", operiraj="slika")
+
+@bottle.post("/enkratnaslikapermutacijep")
+def enkratnaslikapermutacijep():
+    permutacijar = bottle.request.forms["permutacija"]
+    epb = bottle.request.forms["ep"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.enkratna_slika_permutacije(epb)
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/veckratnaslikapermutacije")
+def veckratnaslikapermutacije():
+    return bottle.template("permutacija3.html", operacija="/veckratnaslikapermutacijep", operiraj="slika")
+
+@bottle.post("/veckratnaslikapermutacijep")
+def veckratnaslikapermutacijep():
+    permutacijar = bottle.request.forms["permutacija"]
+    epb = bottle.request.forms["ep"]
+    vb = bottle.request.forms["v"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.veckratno_slikanje_permutacije(epb, vb)
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/elemntpoveckrantenemslikanjupermutacije")
+def elemntpoveckrantenemslikanjupermutacije():
+    return bottle.template("permutacija3.html", operacija="/elemntpoveckrantenemslikanjupermutacijep", operiraj="slika")
+
+@bottle.post("/elemntpoveckrantenemslikanjupermutacijep")
+def elemntpoveckrantenemslikanjupermutacijep():
+    permutacijar = bottle.request.forms["permutacija"]
+    epb = bottle.request.forms["ep"]
+    vb = bottle.request.forms["v"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.veckratna_slika_permutacije(epb, vb)
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/snn")
+def snn():
+    return bottle.template("snn.html", operacija="/snp", operiraj="množica-bijektcij")
+
+@bottle.post("/snp")
+def snp():
+    vb = bottle.request.forms["v"]
+    el = sn(vb)
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/cikel")
+def cikel():
+    return bottle.template("permutacija2.html", operacija="/cikelp", operiraj="slika")
+
+@bottle.post("/cikelp")
+def cikelp():
+    permutacijar = bottle.request.forms["permutacija"]
+    epb = bottle.request.forms["ep"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.cikel_v_permutaciji(epb)
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/cikli")
+def cikli():
+    return bottle.template("permutacije.html", operacija="/ciklip", izracunaj="permutacija?")
+
+
+@bottle.post("/ciklip")
+def ciklip():
+    permutacijar = bottle.request.forms["permutacija"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.cikli_v_permutaciji()
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/inverzz")
+def inverzz():
+    return bottle.template("permutacije.html", operacija="/inverzp", izracunaj="permutacija?")
+
+@bottle.post("/inverzp")
+def inverzp():
+    permutacijar = bottle.request.forms["permutacija"]
+    permutacija = izrisi_permutacijo(permutacijar)
+    el = permutacija.inverz()
+    return bottle.template("resitev.html", rezultat=el)
+
+@bottle.get("/produktp")
+def produktp():
+    return bottle.template("dvepermutaciji.html", operacija="/produktpp", operator="*",  operiraj="produkt")
+
+@bottle.post("/produktpp")
+def produktpp():
+    permutacijar1 = bottle.request.forms["permutacija1"]
+    permutacijar2 = bottle.request.forms["permutacija2"]
+    permutacija1 = izrisi_permutacijo(permutacijar1)
+    permutacija2 = izrisi_permutacijo(permutacijar2)
+    pr = permutacija1 * permutacija2
+    return bottle.template("resitev.html", rezultat=pr)
+
+
+bottle.run(reloader=True, debug=True)
+

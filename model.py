@@ -1,4 +1,4 @@
-''' Začetek z delom na kalkulatorju '''
+''' Verzija nlizu koncu '''
 
 import math
 
@@ -204,8 +204,7 @@ class Matrika:
      
     def __mul__(self, other):
     # Množenje s skalarjem
-
-        if isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, (int, float)):
             zmnozek = []
             m = self.stevilovrstic
             n = self.stevilovrstic
@@ -220,7 +219,7 @@ class Matrika:
         elif isinstance(other, Matrika):
             if self.stevilostolpcev == other.stevilovrstic:
                 return Matrika( 
-                [[sum(x * y for x,y in zip(self.stevilovrstic,other.stevilostolpcev)) 
+                [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
                 for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
         else:
             raise Exception("Matrik se ne more zmnožiti.")
@@ -311,9 +310,9 @@ class Matrika:
     # bi morali pretvoriti v Jordanovo kanonično formo, kar je računsko zahtevno.
         if not self.kvadratna():
             raise Exception("Potenciranje je definirano le za kvadratne matrike.")
-        elif int(k) < 0 or int(k) % 1 != 0:
+        elif float(k) < 0 or float(k) % 1 != 0:
             raise Exception("Število k more biti naravno število!")
-        elif int(k) == 0:
+        elif float(k) == 0:
             return identiteta(self.stevilostolpcev)
         else:
             M = Matrika(self.matrika)
@@ -382,6 +381,7 @@ class Matrika:
                 s = 1 / self.determinante() 
                 resitev.append(M.determinante() * s)
             return resitev
+
 # Pomožni funkciji: 
 
 def ali_je_stohasticen(vektor):
@@ -418,15 +418,22 @@ def nicelna(n):
 
 class Permutacija:
 
-    def __init__(self, n, permutacija):
+    def __init__(self, permutacija):
         ''' Permutacija bo predstavljala poljuben slovar, ki je permutacija (uporabnik jo natipka)
         Velikost je neodvisna od permutacije in bo omogačala, da uporabnik dobi vse permutacije
         dolžine n. Torej dobi množico Sn, za nek n element naravnih števil.'''
         self.permutacija = permutacija
-        self.velikost = n
-        self.jepermutacija = None
-        self.dolzina = None
 
+    def __repr__(self):
+        return f'Permutacija({self.permutacija})'
+
+    def  __str__(self):
+        return f'{(self.permutacija)}'
+
+    def __len__(self):
+     # vrne dolzino permutacije
+        return len(self.permutacija)
+    
     def preverjanje_permutacije(self):
     # Preveri ali je seznam permutacija ! To potem shrani v vrednost slef.jepermutacija
         if set(self.permutacija.keys()) == set(range(1, len(self.permutacija.keys()) + 1)):
@@ -437,34 +444,31 @@ class Permutacija:
         else:
             return False
 
-    def je_permutacija(self):
-        self.jepermutacija = self.preverjanje_permutacije()
-
-    def dolzina_permutacije(self):
-     # vrne dolzino permutacije
-        self.dolzina = len(self.permutacija)
-
     def enkratna_slika_permutacije(self, k):
     # vrne m - ti elemnt permutacije 
     # Izpiše množico Sn t.j. množico vseh bijekcij {1, 2, ..., n}
-        if k > self.dolzina:
+        if float(k) > len(self):
             raise Exception("Število k mora biti kvečjemu število k!")
-        elif k % 1 != 0 or k < 0:
+        elif float(k) % 1 != 0 or float(k) < 0:
             raise Exception("Število k mora biti naravno")
+        elif not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
         else:
-            return self.permutacija.get(k)
+            return self.permutacija.get(int(k))
 
     def veckratno_slikanje_permutacije(self, k, r):
     # vrne zaporedje slik po r - kratnem slikanju k - tega elementa.
-        if r > self.dolzina:
-            raise Exception("Število r mora biti kvečjemu število r!")
-        elif r < 0 or r % 1 != 0:
+        if float(r) < 0 or float(r) % 1 != 0:
             raise Exception("Število r mora biti naravno število!")
+        elif not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
         else:
             list_permutacij = []
+            r = int(r)
+            k = int(k)
             while r + 1 != 0:
-                list_permutacij.append(k)
                 k = self.permutacija[k]
+                list_permutacij.append(k)
                 r -= 1 
             return list_permutacij
         
@@ -472,14 +476,16 @@ class Permutacija:
     # Vrne element po r - kratnem slikanju k - tega elementa
         return self.veckratno_slikanje_permutacije(k, r)[-1]
 
-    def simetricna(self):
-        if self.velikost % 1 != 0 or self.velikost < 0:
-            raise Exception("VElikost mora biti naravno število !") 
-        return sn(self.permutacija) 
-
     def cikel_v_permutaciji(self, m):
     # Vrne cikel začenši z m
+        if float(m) < 0 or float(m) % 1 != 0:
+            raise Exception("Število r mora biti naravno število!") 
+        if float(m) > len(self):
+            raise Exception("Število k mora biti kvečjemu število k!")
+        elif not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
         seznam = [m]
+        m = float(m)
         n = self.permutacija[m]
         while n != m:
             seznam.append(n)
@@ -488,6 +494,8 @@ class Permutacija:
         
     def cikli_v_permutaciji(self):
     # vrne vse cikle v permutaciji
+        if not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
         cikli = []
         pomozna = set()
         for x in range(1, len(self.permutacija) + 1):
@@ -497,27 +505,33 @@ class Permutacija:
                 pomozna.update(cikel)
         return cikli
 
+    def inverz(self):
+        if not self.preverjanje_permutacije:
+            raise Exception("Vpis mora biti permutacija.")
+        inverz = {}
+        for value in self.permutacija.values():
+            inverz[self.permutacija.get(value)] = value
+        return Permutacija(inverz)
 
-    def stevilo_inverzij(self):
-        inverzije = 0
-        for element, sigma_element in enumerate(self.permutacija.values()):
-            for _ in self.permutacija[(element + 1):]:
-                if _ < sigma_element:
-                    inverzije += 1
-        return inverzije
-
-    def sg(self):
-        if self.stevilo_inverzij() % 2 == 0:
-            return 1
+    def __mul__(self, other):
+        if not self.preverjanje_permutacije() or not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
+        elif len(self) != len(other):
+            raise Exception("Permutacije morata imeti enako dolžino.")
         else:
-            return -1
+            produkt = {}
+            for i in range(1, len(self) + 1):
+                produkt[i] = self.permutacija.get(other.permutacija.get(i))
+            return Permutacija(produkt)
 
 def sn(n):
 # vrne množico Sn t.j. vse bijektic.
-    if n == 0:
+    if int(n) == 0:
         return {()}
+    elif float(n) < 0 or float(n) % 1 != 0:
+        raise Exception("Število n mora biti naravno.")
     else:
-        sedajsne_per = sn(n - 1)
+        sedajsne_per = sn(int(n) - 1)
         novejse_per = set()
         for permutacija in sedajsne_per:
             for i in range(len(permutacija) + 1):
