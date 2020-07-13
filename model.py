@@ -315,9 +315,9 @@ class Matrika:
         elif float(k) == 0:
             return identiteta(self.stevilostolpcev)
         else:
-            M = Matrika(self.matrika)
+            M = Matrika(self)
             for _ in range(int(k) - 1):
-                M *= Matrika(self.matrika)
+                M *= self
             return Matrika(M)
 
     def nenegativna(self):
@@ -334,24 +334,26 @@ class Matrika:
         elif not self.nenegativna():
             return False
         else:
-            return nicelna(self.stevilovrstic) < (identiteta(self.stevilostolpcev) + Matrika(self.matrika)) ** (self.stevilostolpcev - 1) 
+            return nicelna(self.stevilovrstic) < (identiteta(self.stevilostolpcev) + self) ** (self.stevilostolpcev - 1) 
 
     def normalnost_opratorja(self):
     # preveri normanost operatorja
         if not self.kvadratna():
             raise Exception("Normanost je definirana le za kvadratne matrike!")
         else:
-            return self * self.transponiranje() == self.transponiranje() * self
+            a = Matrika(self) * self.transponiranje()
+            b = self.transponiranje() * Matrika(self)
+            return a == b
     
     def sebiadjugiranost_operatorja(self):
-        if not self.normalnost_opratorja():
-            return False
+        if not self.kvadratna():
+            raise Exception("Sebiadjugiranost operatorja je definirana le za kvadratne matrike")
         else:
             return self == self.transponiranje()
 
     def unitarnost_operatorja(self):
-        if not self.normalnost_opratorja():
-            return False
+        if not self.kvadratna():
+            raise Exception("Unitarnost operatorja je definirana le za kvadratne matrike.")
         else:
             return self.inverz() == self.transponiranje()
 

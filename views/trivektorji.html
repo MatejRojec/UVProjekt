@@ -1,16 +1,15 @@
-<!-- Za vpisovanje treh vektorjev -->
-
+<!-- Za vpisovanje treh vektorjev oz. permutacija + vektorji  -->
 
 % rebase("osnovna.html")
 
 <form action={{ operacija }} method="POST">
   <div class="form-group">
-    <label for="vektor1">Vpiši prvi vektor:</label>
-    <textarea class="form-control" id="vektor1" rows="1" name="vektor1" placeholder="prvi vektor"></textarea>
-    <label for="vektor2">Vpiši drugi vektor:</label>
-    <textarea class="form-control" id="vektor2" rows="1" name="vektor2" placeholder="drugi vektor"></textarea>
-    <label for="vektor3">Vpiši tretji vektor:</label>
-    <textarea class="form-control" id="vektor3" rows="1" name="vektor3" placeholder="trerji vektor"></textarea>
+    <label for="vektor1">Vpiši {{ objekt1 }}:</label>
+    <textarea class="form-control" id="vektor1" rows="1" name="vektor1"></textarea>
+    <label for="vektor2">Vpiši {{ objekt2 }}:</label>
+    <textarea class="form-control" id="vektor2" rows="1" name="vektor2"></textarea>
+    <label for="vektor3">Vpiši {{ objekt3 }}:</label>
+    <textarea class="form-control" id="vektor3" rows="1" name="vektor3"></textarea>
     <input type="submit" value={{ operiraj }}!>
   </div>
 </form>

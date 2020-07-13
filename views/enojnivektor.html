@@ -1,11 +1,11 @@
-<!-- Za vpis ene matrike -->
+<!-- Za vpisovanje vektorja oz. permutacije-->
 
 % rebase("osnovna.html")
 
 <form action={{ operacija }} method="POST">
   <div class="form-group">
-    <p><label for="vektor">Vpiši vektor:</label></p>
-    <textarea class="form-control" id="vektor" rows="1" name="vektor" placeholder="vektor"></textarea>
+    <p><label for="vektor">Vpiši {{ ime }}:</label></p>
+    <textarea class="form-control" id="vektor" rows="1" name="vektor"></textarea>
     <input type="submit" value={{ izracunaj }}!>
   </div>
 </form>
