@@ -1,10 +1,34 @@
 ''' Verzija nlizu koncu '''
 
 import math
+class Zgodovina:
+
+    def __init__(self):
+        self.zgodovina_matrik = []
+        self.zgodovina_vektorjev = []
+        self.zgodovina_permutacij = []
+
+    def dodaj_permutacijo(self, permutacija):
+        return self.zgodovina_permutacij.append(permutacija)
+    
+    def dodaj_matriko(self, matrika):
+        return self.zgodovina_matrik.append(matrika)
+    
+    def dodaj_vektor(self, vektor):
+        return self.zgodovina_vektorjev.append(vektor)
+
+    def zgodovinamatrik(self):
+        return self.zgodovina_matrik
+    
+    def zgodovinapermutacij(self):
+        return self.zgodovina_permutacij
+    
+    def zgodovinavektorjev(self):
+        return self.zgodovina_vektorjev
 
 class Vektor:
 
-    def __init__(self, vektor):
+    def __init__(self, vektor=[]):
         self.vektor = vektor
         self.stevilovrstic = len(self.vektor)
 
@@ -41,7 +65,6 @@ class Vektor:
         else:
             raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da odšteti.")
 
-
     def __eq__(self, other):
         return self.vektor == other.vektor
 
@@ -50,9 +73,9 @@ class Vektor:
             for i in range(len(self.vektor)):
                 seznam = []
                 if self.vektor[i] > other.vektor[i]:
-                    seznam.append(True)
-                else:
                     seznam.append(False)
+                else:
+                    seznam.append(True)
             return all(seznam)
         else:
             raise Exception("Vektorjev različnih velikosti ne moremo primerjati.")
@@ -74,28 +97,28 @@ class Vektor:
             raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da skalarno zmožiti.")
      
     def mnozenje_vektorja_s_skalarjem(self, skalar):
-        novi = []
+        vektor = []
         for i in range(self.stevilovrstic):
-            novi.append(skalar * self.vektor[i])
-        return novi
+            vektor.append(skalar * self.vektor[i])
+        return Vektor(vektor)
     
     def vektorski_produkt(self, other):
         if self.stevilovrstic == 3 and other.stevilovrstic == 3:
             s = self.vektor
             o = other.vektor
-            novi = [None, None, None]
-            novi[0] = s[1] * o[2] - o[1] * s[2]
-            novi[1] = - s[0] * o[2] + o[0] * s[2]
-            novi[2] = s[0] * o[1] - o[0] * s[1]
-            return Vektor(novi)
+            vektor = [None, None, None]
+            vektor[0] = s[1] * o[2] - o[1] * s[2]
+            vektor[1] = - s[0] * o[2] + o[0] * s[2]
+            vektor[2] = s[0] * o[1] - o[0] * s[1]
+            return Vektor(vektor)
         else: 
             raise Exception("Vektorski produkt je definiran le v treh dimenzijah.")
 
     def kot(self, other):
         if self.norma() == 0 or other.norma() == 0:
-            raise Exception("VEktorja morata biti neničelna.")
+            raise Exception("Vektorja morata biti neničelna.")
         radiani = math.acos(self.skalarni_produkt(other) / (self.norma() * other.norma()))
-        return 180 / radiani
+        return 180  / (radiani * math.pi)
     
     def ploščina_paralelograma(self, other):
     # izračuna ploščino, ki ga omejujeta vektorja self in other 
@@ -113,12 +136,12 @@ class Vektor:
         if self.stevilovrstic == 3 and len(tocka) == 3:
             return f'(x - {tocka[0]}) / {self.vektor[0]} = (y - {tocka[1]}) / {self.vektor[1]} = (z - {tocka[2]}) / {self.vektor[2]}'
         else:
-            raise Exception("Vektorj in točma morata imate oba 3 komponente")
+            raise Exception("Vektor in točka morata imate oba 3 komponente")
 
 
 class Matrika:
 
-    def __init__(self, matrika):
+    def __init__(self, matrika=[]):
         self.matrika = matrika
         self.stevilovrstic = len(matrika)
         self.stevilostolpcev = len(matrika[0])
@@ -131,6 +154,11 @@ class Matrika:
         for vrstica in self.matrika:
             mat += str(vrstica) + '\n'
         return mat
+    '''    vr = ""
+            for element in vrstica:
+                element = str(element)
+                vr += element + ' '
+            mat += str(vr) + '\n' '''
 
     def __getitem__(self, i):
         return self.matrika[i]
@@ -140,9 +168,6 @@ class Matrika:
 
     def __setitem__(self, i, l):
         self.matrika[i] = l
-
-    def kvadratna(self):
-        return self.stevilostolpcev == self.stevilovrstic 
 
     def __add__(self, other):
         if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
@@ -154,7 +179,7 @@ class Matrika:
                 vsota.append(pomozna)
             return Matrika(vsota)
         else:
-            raise Exception("Matriki se ne da sešteti, saj sta različni velikosti.")
+            raise Exception("Matriki se ne da sešteti, saj sta različnih velikosti.")
 
     def __sub__(self, other):
         if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
@@ -166,7 +191,7 @@ class Matrika:
                 razlika.append(pomozna)
             return Matrika(razlika)
         else:
-            raise Exception("Matriki se ne da odšteti, saj sta različni velikosti.")    
+            raise Exception("Matriki se ne da odšteti, saj sta različnih velikosti.")    
 
     def __eq__(self, other):
         return self.matrika == other.matrika
@@ -182,7 +207,32 @@ class Matrika:
                         seznam.append(False)
                 return all(seznam)
         else:
-            raise Exception("Matrik različnih razsežnosti se ne da primerjati.")
+            raise Exception("Matrik se ne da primerati, saj sta različnih velikostih")
+
+    def __mul__(self, other):
+    # Množenje s skalarjem
+        if isinstance(other, (int, float)):
+            zmnozek = []
+            m = self.stevilovrstic
+            n = self.stevilostolpcev
+            for i in range(m):
+                vrstica = []
+                for j in range(n):
+                    vrstica.append(self.matrika[i][j] * other)
+                zmnozek.append(vrstica)
+            return Matrika(zmnozek)
+
+    # Množenje matrik 
+        elif isinstance(other, Matrika):
+            if self.stevilostolpcev == other.stevilovrstic:
+                return Matrika( 
+                [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
+                for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
+        else:
+            raise Exception("Matrik se ne more zmnožiti.")
+
+    def kvadratna(self):
+        return self.stevilostolpcev == self.stevilovrstic 
 
     def sled(self):
         if self.kvadratna():
@@ -201,28 +251,6 @@ class Matrika:
                 vrstica.append(self.matrika[j][i])
             transponiranka.append(vrstica)
         return Matrika(transponiranka)
-     
-    def __mul__(self, other):
-    # Množenje s skalarjem
-        if isinstance(other, (int, float)):
-            zmnozek = []
-            m = self.stevilovrstic
-            n = self.stevilovrstic
-            for i in range(m):
-                vrstica = []
-                for j in range(n):
-                    vrstica.append(self.matrika[i][j] * other)
-                zmnozek.append(vrstica)
-            return Matrika(zmnozek)
-
-    # Množenje matrik 
-        elif isinstance(other, Matrika):
-            if self.stevilostolpcev == other.stevilovrstic:
-                return Matrika( 
-                [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
-                for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
-        else:
-            raise Exception("Matrik se ne more zmnožiti.")
 
     def stohasticna_matrika(self):
         if not self.kvadratna():
@@ -272,7 +300,7 @@ class Matrika:
         if not self.kvadratna():
             raise Exception("Matrika ni kvadratna, poskusite uporabiti funkcijo Psevdo-Inverz")
         elif self.singularnost_matrike():
-            raise Exception("Matrika ni obrnljiva, torej inverz ne obstaja!")
+            raise Exception("Matrika ni obrnljiva, torej inverz ne obstaja, poskusite uporabiti funkcijo Psevdo-Inverz!")
         else:
             inverz = []
             for i in range(self.stevilovrstic):
@@ -288,7 +316,7 @@ class Matrika:
     # posplošitev inverza za matrike, za katere je AA^T obrnljiva matrika 
         m =  Matrika(self.matrika)  * self.transponiranje()
         if m.singularnost_matrike():
-            raise Exception("Psevdo - inverz take matrike ne znam izračunati.")
+            raise Exception("Psevdo-inverz take matrike ne znam izračunati.")
         else:
             n = m.inverz() * self.transponiranje()
             return Matrika(n)
@@ -339,7 +367,7 @@ class Matrika:
     def normalnost_opratorja(self):
     # preveri normanost operatorja
         if not self.kvadratna():
-            raise Exception("Normanost je definirana le za kvadratne matrike!")
+            raise Exception("Normanost operatorja je definirana le za kvadratne matrike!")
         else:
             a = Matrika(self) * self.transponiranje()
             b = self.transponiranje() * Matrika(self)
@@ -420,7 +448,7 @@ def nicelna(n):
 
 class Permutacija:
 
-    def __init__(self, permutacija):
+    def __init__(self, permutacija={}):
         ''' Permutacija bo predstavljala poljuben slovar, ki je permutacija (uporabnik jo natipka)
         Velikost je neodvisna od permutacije in bo omogačala, da uporabnik dobi vse permutacije
         dolžine n. Torej dobi množico Sn, za nek n element naravnih števil.'''
@@ -446,9 +474,19 @@ class Permutacija:
         else:
             return False
 
+    def __mul__(self, other):
+        if not self.preverjanje_permutacije() or not self.preverjanje_permutacije():
+            raise Exception("Vpis mora biti permutacija.")
+        elif len(self) != len(other):
+            raise Exception("Permutacije morata imeti enako dolžino.")
+        else:
+            produkt = {}
+            for i in range(1, len(self) + 1):
+                produkt[i] = self.permutacija.get(other.permutacija.get(i))
+            return Permutacija(produkt)
+        
     def enkratna_slika_permutacije(self, k):
     # vrne m - ti elemnt permutacije 
-    # Izpiše množico Sn t.j. množico vseh bijekcij {1, 2, ..., n}
         if float(k) > len(self):
             raise Exception("Število k mora biti kvečjemu število k!")
         elif float(k) % 1 != 0 or float(k) < 0:
@@ -515,16 +553,7 @@ class Permutacija:
             inverz[self.permutacija.get(value)] = value
         return Permutacija(inverz)
 
-    def __mul__(self, other):
-        if not self.preverjanje_permutacije() or not self.preverjanje_permutacije():
-            raise Exception("Vpis mora biti permutacija.")
-        elif len(self) != len(other):
-            raise Exception("Permutacije morata imeti enako dolžino.")
-        else:
-            produkt = {}
-            for i in range(1, len(self) + 1):
-                produkt[i] = self.permutacija.get(other.permutacija.get(i))
-            return Permutacija(produkt)
+   
 
 def sn(n):
 # vrne množico Sn t.j. vse bijektic.

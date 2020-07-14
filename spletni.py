@@ -1,9 +1,8 @@
-''' Spletni vmesnik bo narejen s pomočjo knjižnice bottle '''
+''' Spletni vmesnik je narejen s pomočjo knjižnice bottle '''
 
 import bottle
-
-from model import Vektor, Matrika, Permutacija, identiteta, ali_je_stohasticen, sn
-
+import random
+from model import Zgodovina, Vektor, Matrika, Permutacija, identiteta, nicelna, ali_je_stohasticen, sn
 
 def izrisi_vektor(vektor):
     v = vektor.split(' ')
@@ -28,9 +27,222 @@ def izrisi_permutacijo(permutacijia):
         sl[i] = v[(i - 1)]
     return Permutacija(sl)
 
+zgodovine = {}
+
+def zgodovina_uporabnika():
+    st_uporabnika = bottle.request.get_cookie('st_uporabnika')
+    if st_uporabnika is None:
+        st_uporabnika = str(random.randint(0, 2 ** 40))
+        zgodovine[st_uporabnika] = Zgodovina()
+        bottle.response.set_cookie("st_uporabnika",  str(st_uporabnika), path='/')
+    return zgodovine[st_uporabnika]
+
+
 @bottle.get("/")
 def main_page():
+
     return bottle.template('osnovnastran.html')
+
+# VEKTORJI
+
+@bottle.get("/sestevanjev")
+def sestevanjev():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/sestejv", operator="+", operiraj="SEŠTEJ")
+
+@bottle.post("/sestejv")
+def sestejv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    vsota = vektor1 + vektor2
+    return bottle.template("resitev.html", besedilo="Vsota vektorjev:", rezultat=vsota)
+
+@bottle.get("/odstevanjev")
+def odstevanjev():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/odstevanjevv", operator="-", operiraj="odstej")
+
+@bottle.post("/odstevanjevv")
+def odstevanjevv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    razlika = vektor1 - vektor2
+    return bottle.template("resitev.html", besedilo="Razlika matrik", rezultat=razlika)
+
+@bottle.get("/izenaciv")
+def izenaciv():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/izenacivv", operator="=", operiraj="izenači")
+
+@bottle.post("/izenacivv")
+def izenacivv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    if vektor1 == vektor2:
+        return bottle.template("resitev.html", besedilo="Vektorja", rezultat="sta enaka!")
+    else:
+        return bottle.template("resitev.html", besedilo="Vektorja", rezultat="nista enaka")
+
+@bottle.get("/primerjajv")
+def primerjajv():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/primerjajvv", operator=">", operiraj="primerjaj")
+
+@bottle.post("/primerjajvv")
+def primerjajvv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    if vektor1 < vektor2:
+        return bottle.template("resitev.html", besedilo="Prvi vektor", rezultat="ni večji od drugega vektorja")
+    else:
+        return bottle.template("resitev.html", besedilo="Razlika matrik", rezultat="je večji od drugega vektorja")
+
+@bottle.get("/norm")
+def norm():
+    return bottle.template("enojnivektor.html", ime="vektor", operacija="/normm", izracunaj="norma")
+
+@bottle.post("/normm")
+def normm():
+    zgodovina = zgodovina_uporabnika()
+    vektorr = bottle.request.forms["vektor"]
+    vektor = izrisi_vektor(vektorr)
+    zgodovina.dodaj_vektor(vektor)
+    normaa = vektor.norma()
+    return bottle.template("resitev.html", besedilo="Norma:", rezultat=normaa)
+
+@bottle.get("/skalarniprodukt")
+def skalarniprodukt():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/skalarniproduktv", operator="*", operiraj="skalarno zmnoži")
+
+@bottle.post("/skalarniproduktv")
+def skalarniproduktv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    sp = vektor1.skalarni_produkt(vektor2)
+    return bottle.template("resitev.html", besedilo="Skalarni produkt:", rezultat=sp) 
+
+@bottle.get("/kot")
+def kot():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/kotv", operator="", operiraj="izračunaj kot")
+
+@bottle.post("/kotv")
+def kotv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    k = vektor1.kot(vektor2)
+    return bottle.template("resitev.html", besedilo="Kot:", rezultat=k)
+
+@bottle.get("/vektorskiprodukt")
+def vektorskiprodukt():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/vektorskiproduktv", operator="", operiraj="vektorsko množi")
+
+@bottle.post("/vektorskiproduktv")
+def vektorskiproduktv():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    vp = vektor1.vektorski_produkt(vektor2)
+    return bottle.template("resitev.html", besedilo="Vektorski produkt:", rezultat=vp)
+
+@bottle.get("/ploscinaparlalograma")
+def ploscinaparlalograma():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/ploscinaparlalogramav", operator="", operiraj="ploscina paralelograma")
+
+@bottle.post("/ploscinaparlalogramav")
+def ploscinaparlalogramav():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    pp = abs(vektor1.ploščina_paralelograma(vektor2))
+    return bottle.template("resitev.html", besedilo="Ploščina paralelograma:", rezultat=pp)
+
+@bottle.get("/volumenparalelopipeda")
+def volumenparalelopipeda():
+    return bottle.template("trivektorji.html", objekt1="prvi vektor", objekt2="drugi vektor", objekt3="tretji vektor", operacija="/volumenparalelopipedav", operator="", operiraj="volumen paralelopipeda")
+
+@bottle.post("/volumenparalelopipedav")
+def volumenparalelopipedav():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor3r = bottle.request.forms["vektor3"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    vektor3 = izrisi_vektor(vektor3r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    zgodovina.dodaj_vektor(vektor3)
+    vop = abs(vektor1.volumen_paralelepipeda(vektor2, vektor3))
+    return bottle.template("resitev.html", besedilo="Velumen paralelopipeda:", rezultat=vop) 
+
+@bottle.get("/volumenpiramide")
+def volumenpiramide():
+    return bottle.template("trivektorji.html", objekt1="prvi vektor", objekt2="drugi vektor", objekt3="tretji vektor", operacija="/volumenpiramidev", operator="", operiraj="volumen piramide")
+
+@bottle.post("/volumenpiramidev")
+def volumenpiramidev():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor3r = bottle.request.forms["vektor3"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    vektor3 = izrisi_vektor(vektor3r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    zgodovina.dodaj_vektor(vektor3)
+    volp = vektor1.volumen_piramide(vektor2, vektor3)
+    return bottle.template("resitev.html", besedilo="Volumen piramide:", rezultat=volp) 
+
+@bottle.get("/enacbapremice")
+def enacbapremice():
+    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/enacbapremicev", operator="", operiraj="Enačba:")
+
+@bottle.post("/enacbapremicev")
+def enacbapremicev():
+    zgodovina = zgodovina_uporabnika()
+    vektor1r = bottle.request.forms["vektor1"]
+    vektor2r = bottle.request.forms["vektor2"]
+    vektor1 = izrisi_vektor(vektor1r)
+    vektor2 = izrisi_vektor(vektor2r)
+    zgodovina.dodaj_vektor(vektor1)
+    zgodovina.dodaj_vektor(vektor2)
+    ep = vektor1.enacba_premice(vektor2)
+    return bottle.template("resitev.html", besedilo="Enačba premice:", rezultat=ep) 
 
 # MATRIKE
 
@@ -40,10 +252,13 @@ def sestevanjem():
 
 @bottle.post("/sestejm")
 def sestejm():
+    zgodovina = zgodovina_uporabnika()
     matrika1r = bottle.request.forms["matrika1"]
     matrika2r = bottle.request.forms["matrika2"]
     matrika1 = izrisi_matriko(matrika1r)
     matrika2 = izrisi_matriko(matrika2r)
+    zgodovina.dodaj_matriko(matrika1)
+    zgodovina.dodaj_matriko(matrika2)
     vsota = matrika1 + matrika2
     return bottle.template("resitev.html", besedilo="Vsota matrik" , rezultat=vsota)
 
@@ -53,10 +268,13 @@ def odstevanjem():
 
 @bottle.post("/odstejm")
 def odstejm():
+    zgodovina = zgodovina_uporabnika()
     matrika1r = bottle.request.forms["matrika1"]
     matrika2r = bottle.request.forms["matrika2"]
     matrika1 = izrisi_matriko(matrika1r)
     matrika2 = izrisi_matriko(matrika2r)
+    zgodovina.dodaj_matriko(matrika1)
+    zgodovina.dodaj_matriko(matrika2)
     razlika = matrika1 - matrika2
     return bottle.template("resitev.html", besedilo="Razlika matrik", rezultat=razlika)
 
@@ -66,10 +284,13 @@ def izenacim():
 
 @bottle.post("/izenacimm")
 def izenacimm():
+    zgodovina = zgodovina_uporabnika()
     matrika1r = bottle.request.forms["matrika1"]
     matrika2r = bottle.request.forms["matrika2"]
     matrika1 = izrisi_matriko(matrika1r)
     matrika2 = izrisi_matriko(matrika2r)
+    zgodovina.dodaj_matriko(matrika1)
+    zgodovina.dodaj_matriko(matrika2)
     if matrika1 == matrika2:
         return bottle.template("resitev.html",  besedilo="Matriki", rezultat='sta enaki')
     else:
@@ -81,10 +302,13 @@ def primerjam():
 
 @bottle.post("/primerjajm")
 def primerjajm():
+    zgodovina = zgodovina_uporabnika()
     matrika1r = bottle.request.forms["matrika1"]
     matrika2r = bottle.request.forms["matrika2"]
     matrika1 = izrisi_matriko(matrika1r)
     matrika2 = izrisi_matriko(matrika2r)
+    zgodovina.dodaj_matriko(matrika1)
+    zgodovina.dodaj_matriko(matrika2)
     if matrika1 < matrika2:
         return bottle.template("resitev.html",  besedilo="Prva matrika", rezultat='je večja od druge matrike')
     else:
@@ -96,8 +320,10 @@ def sledenje():
 
 @bottle.post("/sled")
 def sled():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     sled = matrika.sled()
     return bottle.template("resitev.html", besedilo="Sled:", rezultat=sled)
 
@@ -107,8 +333,10 @@ def determiniranje():
 
 @bottle.post("/determinanta")
 def determinanta():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     det = matrika.determinante()
     return bottle.template("resitev.html", besedilo="Determinanta:", rezultat=det)
 
@@ -118,8 +346,10 @@ def transponiranje():
 
 @bottle.post("/transponiranka")
 def transponiranka():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     rezultat = matrika.transponiranje()
     return bottle.template("resitev.html", besedilo="Transponirana matrika:", rezultat=rezultat)
 
@@ -129,10 +359,13 @@ def produkt():
 
 @bottle.post("/produktm")
 def prouktm():
+    zgodovina = zgodovina_uporabnika()
     matrika1r = bottle.request.forms["matrika1"]
     matrika2r = bottle.request.forms["matrika2"]
     matrika1 = izrisi_matriko(matrika1r)
     matrika2 = izrisi_matriko(matrika2r)
+    zgodovina.dodaj_matriko(matrika1)
+    zgodovina.dodaj_matriko(matrika2)
     product = matrika1 * matrika2
     return bottle.template("resitev.html", besedilo="Produkt matrik:", rezultat=product)
 
@@ -142,8 +375,10 @@ def power():
 
 @bottle.post("/potenciraj")
 def potenciraj():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     ep = bottle.request.forms["eksponent"]
     rezultat = matrika ** ep
     return bottle.template("resitev.html", besedilo="Potencirana matrika:", rezultat=rezultat)
@@ -154,8 +389,10 @@ def inverz():
 
 @bottle.post("/inverzm")
 def inverzm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     inverzz = matrika.inverz()
     return bottle.template("resitev.html", besedilo="Inverz matrike:", rezultat=inverzz)
 
@@ -165,8 +402,10 @@ def psevdoinverz():
 
 @bottle.post("/psevdoinverzm")
 def psevdoinverzm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     psevdoinverzz = matrika.psevdoinverz()
     return bottle.template("resitev.html", besedilo="Psevdoinverz matrike:", rezultat=psevdoinverzz)
 
@@ -177,9 +416,11 @@ def sistem():
 
 @bottle.post("/sistemi")
 def sistemi():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     vektorr = bottle.request.forms["eksponent"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     vektor = izrisi_vektor(vektorr)
     sol = matrika.cramerjevo_pravilo(vektor)
     return bottle.template("resitev.html", besedilo="Rešitev sistema", rezultat=sol)
@@ -190,13 +431,15 @@ def dvojnostohasticna():
 
 @bottle.post("/dvojnostohasticnam")
 def dvojnostohasticnam():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     dvojno = matrika.stohasticna_matrika()
     if dvojno:
         return bottle.template("resitev.html",  besedilo="Matrika", rezultat='je dvojnostohastična.')
     else:
-        return bottle.template("last.html", lastnost="ni dvojnosohastična")
+        return bottle.template("resitev.html",  besedilo="Matrika", rezultat='ni dvojnostohastična.')
 
 @bottle.get("/permutacijskaa")
 def permutacijskaa():
@@ -204,8 +447,10 @@ def permutacijskaa():
 
 @bottle.post("/permutacijskam")
 def permutacijskam():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     per = matrika.permutacijska()
     if per:
         return bottle.template("resitev.html",  besedilo="Matrika", rezultat='je permutacijska.')
@@ -218,8 +463,10 @@ def nenegativnost():
 
 @bottle.post("/nenegativnostm")
 def nenegativnostm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     neneg = matrika.nenegativna()
     if neneg:
         return bottle.template("resitev.html",  besedilo="Matrika", rezultat='je nenegativna.')
@@ -232,8 +479,10 @@ def reduciabilnost():
 
 @bottle.post("/reduciabilnostm")
 def reduciabilnostm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     red = matrika.reduciabilnost()
     if red:
         return bottle.template("resitev.html",  besedilo="Matrika", rezultat='je reduciabilna..')
@@ -246,8 +495,10 @@ def normalnost():
 
 @bottle.post("/normalnostm")
 def normalnostm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     nor = matrika.normalnost_opratorja()
     if nor:
         return bottle.template("resitev.html",  besedilo="Operator", rezultat='je normalnen.')
@@ -260,8 +511,10 @@ def ortogonalnost():
 
 @bottle.post("/unitarnostm")
 def unitarnostm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     uni = matrika.unitarnost_operatorja()
     if uni:
         return bottle.template("resitev.html",  besedilo="Operator", rezultat='je unitaren.')
@@ -274,177 +527,15 @@ def sebiadjugiranost():
 
 @bottle.post("/sebiadjugiranostm")
 def sebiadjugiranostm():
+    zgodovina = zgodovina_uporabnika()
     matrikar = bottle.request.forms["matrika"]
     matrika = izrisi_matriko(matrikar)
+    zgodovina.dodaj_matriko(matrika)
     sebi = matrika.sebiadjugiranost_operatorja()
     if sebi:
         return bottle.template("resitev.html",  besedilo="Operator", rezultat='je sebiadjugiran.')
     else:
         return bottle.template("resitev.html",  besedilo="Operator", rezultat='ni sebiadjugiran.')
-
-# VEKTORJI
-
-@bottle.get("/sestevanjev")
-def sestevanjev():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/sestejv", operator="+", operiraj="SEŠTEJ")
-
-@bottle.post("/sestejv")
-def sestejv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    vsota = vektor1 + vektor2
-    return bottle.template("resitev.html", besedilo="Vsota vektorjev:", rezultat=vsota)
-
-@bottle.get("/odstevanjev")
-def odstevanjev():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/odstevanjevv", operator="-", operiraj="odstej")
-
-@bottle.post("/odstevanjevv")
-def odstevanjevv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    razlika = vektor1 - vektor2
-    return bottle.template("resitev.html", besedilo="Razlika matrik", rezultat=razlika)
-
-@bottle.get("/izenaciv")
-def izenaciv():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/izenacivv", operator="=", operiraj="izenači")
-
-@bottle.post("/izenacivv")
-def izenacivv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    if vektor1 == vektor2:
-        return bottle.template("resitev.html", besedilo="Vektorja", rezultat="sta enaka!")
-    else:
-        return bottle.template("resitev.html", besedilo="Vektorja", rezultat="nista enaka")
-
-@bottle.get("/primerjajv")
-def primerjajv():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/primerjajvv", operator=">", operiraj="primerjaj")
-
-@bottle.post("/primerjajvv")
-def primerjajvv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    if vektor1 > vektor2:
-        return bottle.template("resitev.html", besedilo="Prvi vektor", rezultat="je večji od drugega vektorja")
-    else:
-        return bottle.template("resitev.html", besedilo="Razlika matrik", rezultat="ni večji od drugega vektorja")
-
-@bottle.get("/norm")
-def norm():
-    return bottle.template("enojnivektor.html", ime="vektor", operacija="/normm", izracunaj="norma")
-
-@bottle.post("/normm")
-def normm():
-    vektorr = bottle.request.forms["vektor"]
-    vektor = izrisi_vektor(vektorr)
-    normaa = vektor.norma()
-    return bottle.template("resitev.html", besedilo="Norma:", rezultat=normaa)
-
-@bottle.get("/skalarniprodukt")
-def skalarniprodukt():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/skalarniproduktv", operator="*", operiraj="skalarno zmnoži")
-
-@bottle.post("/skalarniproduktv")
-def skalarniproduktv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    sp = vektor1.skalarni_produkt(vektor2)
-    return bottle.template("resitev.html", besedilo="Skalarni produkt:", rezultat=sp) 
-
-@bottle.get("/kot")
-def kot():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/kotv", operator="", operiraj="izračunaj kot")
-
-@bottle.post("/kotv")
-def kotv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    k = vektor1.kot(vektor2)
-    return bottle.template("resitev.html", besedilo="Kot:", rezultat=k)
-
-@bottle.get("/vektorskiprodukt")
-def vektorskiprodukt():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/vektorskiproduktv", operator="", operiraj="vektorsko množi")
-
-@bottle.post("/vektorskiproduktv")
-def vektorskiproduktv():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    vp = vektor1.vektorski_produkt(vektor2)
-    return bottle.template("resitev.html", besedilo="Vektorski produkt:", rezultat=vp)
-
-@bottle.get("/ploscinaparlalograma")
-def ploscinaparlalograma():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/ploscinaparlalogramav", operator="", operiraj="ploscina paralelograma")
-
-@bottle.post("/ploscinaparlalogramav")
-def ploscinaparlalogramav():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    pp = abs(vektor1.ploščina_paralelograma(vektor2))
-    return bottle.template("resitev.html", besedilo="Ploščina paralelograma:", rezultat=pp)
-
-@bottle.get("/volumenparalelopipeda")
-def volumenparalelopipeda():
-    return bottle.template("trivektorji.html", objekt1="prvi vektor", objekt2="drugi vektor", objekt3="tretji vektor", operacija="/volumenparalelopipedav", operator="", operiraj="volumen paralelopipeda")
-
-@bottle.post("/volumenparalelopipedav")
-def volumenparalelopipedav():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor3r = bottle.request.forms["vektor3"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    vektor3 = izrisi_vektor(vektor3r)
-    vop = abs(vektor1.volumen_paralelepipeda(vektor2, vektor3))
-    return bottle.template("resitev.html", besedilo="Velumen paralelopipeda:", rezultat=vop) 
-
-@bottle.get("/volumenpiramide")
-def volumenpiramide():
-    return bottle.template("trivektorji.html", objekt1="prvi vektor", objekt2="drugi vektor", objekt3="tretji vektor", operacija="/volumenpiramidev", operator="", operiraj="volumen piramide")
-
-@bottle.post("/volumenpiramidev")
-def volumenpiramidev():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor3r = bottle.request.forms["vektor3"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    vektor3 = izrisi_vektor(vektor3r)
-    volp = vektor1.volumen_piramide(vektor2, vektor3)
-    return bottle.template("resitev.html", besedilo="Volumen piramide:", rezultat=volp) 
-
-@bottle.get("/enacbapremice")
-def enacbapremice():
-    return bottle.template("operacijav.html", prvi="prvi vektor" , drugi="drugi vektor", operacija="/enacbapremicev", operator="", operiraj="Enačba:")
-
-@bottle.post("/enacbapremicev")
-def enacbapremicev():
-    vektor1r = bottle.request.forms["vektor1"]
-    vektor2r = bottle.request.forms["vektor2"]
-    vektor1 = izrisi_vektor(vektor1r)
-    vektor2 = izrisi_vektor(vektor2r)
-    ep = vektor1.enacba_premice(vektor2)
-    return bottle.template("resitev.html", besedilo="Enačba premice:", rezultat=ep) 
 
 # PERMUTACIJE
 
@@ -454,8 +545,10 @@ def preverjanjepermutacije():
 
 @bottle.post("/preverjanjepermutacijep")
 def preverjanjepermutacijep():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(matrika)
     lx = permutacija.preverjanje_permutacije()
     if lx:
         return bottle.template("resitev.html", besedilo="Zapis je", rezultat="permutacija.")
@@ -468,9 +561,11 @@ def enkratnaslikapermutacije():
 
 @bottle.post("/enkratnaslikapermutacijep")
 def enkratnaslikapermutacijep():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor1"]
     epb = bottle.request.forms["vektor2"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.enkratna_slika_permutacije(epb)
     return bottle.template("resitev.html", besedilo="Slika elementa:", rezultat=el)
 
@@ -481,10 +576,12 @@ def veckratnaslikapermutacije():
 
 @bottle.post("/veckratnaslikapermutacijep")
 def veckratnaslikapermutacijep():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor1"]
     epb = bottle.request.forms["vektor2"]
     vb = bottle.request.forms["vektor3"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.veckratno_slikanje_permutacije(epb, vb)
     return bottle.template("resitev.html", besedilo="Slike elementov:", rezultat=el)
 
@@ -495,10 +592,12 @@ def elemntpoveckrantenemslikanjupermutacije():
 
 @bottle.post("/elemntpoveckrantenemslikanjupermutacijep")
 def elemntpoveckrantenemslikanjupermutacijep():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor1"]
     epb = bottle.request.forms["vektor2"]
     vb = bottle.request.forms["vektor3"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.veckratna_slika_permutacije(epb, vb)
     return bottle.template("resitev.html", besedilo="Element po večkratnem slikanju:", rezultat=el)
 
@@ -518,9 +617,11 @@ def cikel():
 
 @bottle.post("/cikelp")
 def cikelp():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor1"]
     epb = bottle.request.forms["vektor2"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.cikel_v_permutaciji(epb)
     return bottle.template("resitev.html", besedilo="Cikel:", rezultat=el)
 
@@ -531,8 +632,10 @@ def cikli():
 
 @bottle.post("/ciklip")
 def ciklip():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.cikli_v_permutaciji()
     return bottle.template("resitev.html", besedilo="Cikli:", rezultat=el)
 
@@ -543,8 +646,10 @@ def inverzz():
 
 @bottle.post("/inverzp")
 def inverzp():
+    zgodovina = zgodovina_uporabnika()
     permutacijar = bottle.request.forms["vektor"]
     permutacija = izrisi_permutacijo(permutacijar)
+    zgodovina.dodaj_permutacijo(permutacija)
     el = permutacija.inverz()
     return bottle.template("resitev.html", besedilo="Inverz:", rezultat=el)
 
@@ -554,13 +659,44 @@ def produktp():
 
 @bottle.post("/produktpp")
 def produktpp():
+    zgodovina = zgodovina_uporabnika()
     permutacijar1 = bottle.request.forms["vektor1"]
     permutacijar2 = bottle.request.forms["vektor2"]
     permutacija1 = izrisi_permutacijo(permutacijar1)
     permutacija2 = izrisi_permutacijo(permutacijar2)
+    zgodovina.dodaj_permutacijo(permutacija)
+    zgodovina.dodaj_permutacijo(permutacija)
     pr = permutacija1 * permutacija2
     return bottle.template("resitev.html", besedilo="Produkt", rezultat=pr)
 
+#ZGODOVINA
+
+@bottle.get("/zgodovinamat")
+def zgodovinamat():
+    zgodovina = zgodovina_uporabnika()
+    zgodovinamatrik = zgodovina.zgodovinamatrik()
+    if len(zgodovinamatrik) == 0:
+        return bottle.template("resitev.html", besedilo="Niste vpisali še nobene matrike", rezultat="")
+    else:
+        return bottle.template("resitev.html", besedilo="Zgodovina matrik:", rezultat=zgodovinamatrik)
+
+@bottle.get("/zgodovinavek")
+def zgodovinavek():
+    zgodovina = zgodovina_uporabnika()
+    zgodovinavek = zgodovina.zgodovinavektorjev()
+    if len(zgodovinavek) == 0:
+        return bottle.template("resitev.html", besedilo="Niste vpisali še nobenega vektorja", rezultat="")
+    else:
+        return bottle.template("resitev.html", besedilo="Zgodovina vektorjev:", rezultat=zgodovinavek)
+    
+@bottle.get("/zgodovinaper")
+def zgodovinaper():
+    zgodovina = zgodovina_uporabnika()
+    zgodovinaper = zgodovina.zgodovinapermutacij()
+    if len(zgodovinaper) == 0:
+        return bottle.template("resitev.html", besedilo="Niste vpisali še nobene permutacije", rezultat="")
+    else:
+        return bottle.template("resitev.html", besedilo="Zgodovina permutacij:", rezultat=zgodovinaper)
 
 bottle.run(reloader=True, debug=True)
 
