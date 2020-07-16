@@ -65,7 +65,7 @@ class Vektor:
             raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da sešteti.")
 
     def __sub__(self, other):
-        if self.stevilovrstic == other.stevilovrstic:
+        if len(self) == len(other):
             nov_vektor = []
             n = len(self)
             for i in range(n):
@@ -99,7 +99,7 @@ class Vektor:
     
     def skalarni_produkt(self, other):
     # Govorimo o standardem skalarnem produktu v R^n po komponentah.
-        if self.stevilovrstic == other.stevilovrstic:
+        if len(self) == len(other):
             produkt = 0
             n = len(self)
             for i in range(n):
@@ -258,8 +258,8 @@ class Matrika:
         elif isinstance(other, Matrika):
             if self.stevilostolpcev == other.stevilovrstic:
                 return Matrika( 
-                [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
-                for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
+                        [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
+                        for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
             else:
                 raise Exception("Matrik se ne more zmnožiti.")
 
@@ -310,8 +310,8 @@ class Matrika:
         else:
             M = self.matrika
             determinanta = 0
-            indeksi = list(range(self.stevilovrstic))
-            for stolpci in indeksi:
+            ind = list(range(self.stevilovrstic))
+            for stolpci in ind:
                 M2 = M
                 M2 = M2[1:]
                 visina = len(M2)
