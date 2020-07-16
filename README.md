@@ -1,6 +1,6 @@
 # Permavulator
 
-Moj projekt pri predmetku **Uvod v programiranje** v sklopu 1. letnkika na študijskem programu Finančna matematika na Fakulteti za matematiko in fiziko je 
+Moj projekt pri predmetu **Uvod v programiranje** v sklopu 1. letnkika na študijskem programu Finančna matematika na Fakulteti za matematiko in fiziko je 
 kalkulator za računanje z vektorji, matrikami in permutacijami. Spletni vmesnik je narejen s pomočjo knjižnice [bottle](https://bottlepy.org/docs/dev/).
 
 Izračuna lahko veliko stvari s katerimi se zagotovo sreča vsak študent, ki študira matematiko ali fiziko kot so:
