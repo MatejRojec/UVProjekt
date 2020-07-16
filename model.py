@@ -315,7 +315,7 @@ class Matrika:
         return self.determinante() == 0
 
     def kofaktor(self, i, j):
-        return Matrika([vrstica[:j] + vrstica[j+1:] for vrstica in (self.matrika[:i] + self.matrika[i+1:])])
+        return Matrika([vrstica[:j] + vrstica[(j + 1):] for vrstica in (self.matrika[:i] + self.matrika[(i + 1):])])
 
     def inverz(self):
         if not self.kvadratna():
