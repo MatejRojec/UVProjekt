@@ -140,26 +140,26 @@ class Vektor:
             return stopinje
     
     def ploščina_paralelograma(self, other):
-    # Izračuna ploščino, ki ga omejujeta self.vektor in other.vektor . 
+    # Izračuna ploščino, ki ga omejujeta self.vektor in other.vektor. 
         if self.smo_v_treh_dimenzijah(other):
             kot = math.sin(self.kot(other) * math.pi / 180) 
             rezultat = kot * self.norma() * other.norma()
             return rezultat
         else:
-            raise Exception("Vektorski morata imeti tri komponente.")
+            raise Exception("Vektorja morata imeti tri komponente.")
 
     def volumen_paralelepipeda(self, other, tretji):
     # Izračuna volumen paraleliepipeda, ki ga omejuje trije vektorji.
         if self.smo_v_treh_dimenzijah(other) and len(tretji) == 3:
             return self.ploščina_paralelograma(other) * tretji.norma()
         else:
-            raise Exception("Vektorski morata imeti tri komponente.")
+            raise Exception("Vektorji moraja imeti tri komponente.")
 
     def volumen_piramide(self, other, tretji):
         if self.smo_v_treh_dimenzijah(other) and len(tretji) == 3:
             return self.volumen_paralelepipeda(other, tretji) / 6
         else:
-            raise Exception("Vektorski morata imeti tri komponente.")
+            raise Exception("Vektorji morajo imeti tri komponente.")
 
     def enacba_premice(self, other):
     # Ennačna premice s smernim vekotrem self, ki gre skozi točko "other".
@@ -261,7 +261,7 @@ class Matrika:
                         [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
                         for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
             else:
-                raise Exception("Matrik se ne more zmnožiti.")
+                raise Exception("Matrik se ne moreta zmnožiti.")
 
     def kvadratna(self):
         return self.stevilostolpcev == self.stevilovrstic 
@@ -274,7 +274,7 @@ class Matrika:
                 trace += self[i][i]
             return trace
         else:
-            raise Exception("Sled je definirana le za kvadratne matrike.")
+            raise Exception("Matrika mora biti kvadratna.")
     
     def transponiranje(self):
         transponiranka = []
@@ -287,21 +287,9 @@ class Matrika:
             transponiranka.append(vrstica)
         return Matrika(transponiranka)
 
-    def stohasticna_matrika(self):
-        if not self.kvadratna():
-            return False
-        else:
-            for vrstica in self.matrika:
-                if not ali_je_stohasticen(vrstica):
-                    return False
-            for vrstica in self.transponiranje():
-                if not ali_je_stohasticen(vrstica):
-                    return False
-            return True
-    
     def determinante(self):
         if not self.kvadratna():
-            raise Exception("Determinanta pravokotnih matrik ni definirana.")
+            raise Exception("Matrika mora biti kvadratna.")
         elif self.stevilovrstic == 1:
             return self[0][0]
         elif self.stevilovrstic == 2:
@@ -385,6 +373,29 @@ class Matrika:
         else:
             return nicelna(self.stevilovrstic) < (identiteta(self.stevilostolpcev) + self) ** (self.stevilostolpcev - 1) 
 
+    def stohasticna_matrika(self):
+        if not self.kvadratna():
+            return False
+        else:
+            for vrstica in self.matrika:
+                if not ali_je_stohasticen(vrstica):
+                    return False
+            for vrstica in self.transponiranje():
+                if not ali_je_stohasticen(vrstica):
+                    return False
+            return True
+
+    def permutacijska(self):
+        if not self.stohasticna_matrika():
+            return False
+        else:
+            for vrstica in self.matrika:
+                for element in vrstica:
+                    if element != 0:
+                        if element != 1:
+                            return False
+            return True
+    
     def normalnost_opratorja(self):
     # preveri normanost operatorja
         if not self.kvadratna():
@@ -406,17 +417,6 @@ class Matrika:
         else:
             return self.inverz() == self.transponiranje()
 
-    def permutacijska(self):
-        if not self.stohasticna_matrika():
-            return False
-        else:
-            for vrstica in self.matrika:
-                for element in vrstica:
-                    if element != 0:
-                        if element != 1:
-                            return False
-            return True
-
     def cramerjevo_pravilo(self, b):
     # Naj bo A matrika, ki predstavlja sistem n enančb z n neznakami, če je A nesingularna lahko uporabimo sledeč postopek za izračun rešitve sistema.
         if self.singularnost_matrike():
@@ -434,7 +434,7 @@ class Matrika:
                 resitev.append(M.determinante() * s)
             return resitev
 
-# Pomožni funkciji: 
+# Pomožne funkciji: 
 
 def ali_je_stohasticen(vektor):
     vsota = 0
