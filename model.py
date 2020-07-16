@@ -1,6 +1,11 @@
-''' Verzija nlizu koncu '''
+''' Popravljena verzija '''
 
 import math
+
+
+# Class Zgodovina je namenjen konsistentmem beleženju vektorev, matrik in permutacij,
+# ki jih je uporabnik vpisal (vsak uporabnik ima svoj dnevnik).
+
 class Zgodovina:
 
     def __init__(self):
@@ -26,6 +31,8 @@ class Zgodovina:
     def zgodovinavektorjev(self):
         return self.zgodovina_vektorjev
 
+# Class Vektor je namenjen računanju z vektorji.
+
 class Vektor:
 
     def __init__(self, vektor=[]):
@@ -36,7 +43,7 @@ class Vektor:
         return f'Vektor({self.vektor})'
 
     def  __str__(self):
-        return f'{tuple(self.vektor)}'
+        return f'{list(self.vektor)}'
 
     def __getitem__(self, i):
         return self.vektor[i]
@@ -48,10 +55,11 @@ class Vektor:
         return self.stevilovrstic
     
     def __add__(self, other):
-        if self.stevilovrstic == other.stevilovrstic:
+        if len(self) == len(other):
             nov_vektor = []
-            for i in range(self.stevilovrstic):
-                nov_vektor.append(self.vektor[i] + other.vektor[i])
+            n = len(self)
+            for i in range(n):
+                nov_vektor.append(self[i] + other[i])
             return Vektor(nov_vektor)
         else:
             raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da sešteti.")
@@ -59,8 +67,9 @@ class Vektor:
     def __sub__(self, other):
         if self.stevilovrstic == other.stevilovrstic:
             nov_vektor = []
-            for i in range(self.stevilovrstic):
-                nov_vektor.append(self.vektor[i] - other.vektor[i])
+            n = len(self)
+            for i in range(n):
+                nov_vektor.append(self[i] - other[i])
             return Vektor(nov_vektor)
         else:
             raise Exception("Vektorja imata različno število vrstic, zatorej se ju ne da odšteti.")
@@ -69,8 +78,9 @@ class Vektor:
         return self.vektor == other.vektor
 
     def __lt__(self, other):
-        if self.stevilovrstic == other.stevilovrstic:
-            for i in range(len(self.vektor)):
+        if len(self) == len(other):
+            n = len(self)
+            for i in range(n):
                 seznam = []
                 if self.vektor[i] > other.vektor[i]:
                     seznam.append(False)
@@ -82,15 +92,17 @@ class Vektor:
 
     def norma(self):
         norma = 0
-        for i in range(self.stevilovrstic):
+        n = len(self)
+        for i in range(n):
             norma += self[i] ** 2
         return norma
     
     def skalarni_produkt(self, other):
-    # Govorimo o standardem skalarnem produktu v R^n po komponentah
+    # Govorimo o standardem skalarnem produktu v R^n po komponentah.
         if self.stevilovrstic == other.stevilovrstic:
             produkt = 0
-            for i in range(self.stevilovrstic):
+            n = len(self)
+            for i in range(n):
                 produkt += self[i] * other[i]
             return produkt
         else:
@@ -98,46 +110,65 @@ class Vektor:
      
     def mnozenje_vektorja_s_skalarjem(self, skalar):
         vektor = []
-        for i in range(self.stevilovrstic):
-            vektor.append(skalar * self.vektor[i])
+        n  = len(self)
+        for i in range(n):
+            vektor.append(skalar * self[i])
         return Vektor(vektor)
     
+    def smo_v_treh_dimenzijah(self, other):
+        return len(self) == 3 and len(other) == 3
+
     def vektorski_produkt(self, other):
-        if self.stevilovrstic == 3 and other.stevilovrstic == 3:
-            s = self.vektor
-            o = other.vektor
+        if self.smo_v_treh_dimenzijah(other):
+            s = self
+            o = other
             vektor = [None, None, None]
             vektor[0] = s[1] * o[2] - o[1] * s[2]
             vektor[1] = - s[0] * o[2] + o[0] * s[2]
             vektor[2] = s[0] * o[1] - o[0] * s[1]
             return Vektor(vektor)
         else: 
-            raise Exception("Vektorski produkt je definiran le v treh dimenzijah.")
+            raise Exception("Vektorja morata imeti tri komponente.")
 
     def kot(self, other):
         if self.norma() == 0 or other.norma() == 0:
             raise Exception("Vektorja morata biti neničelna.")
-        radiani = math.acos(self.skalarni_produkt(other) / (self.norma() * other.norma()))
-        return 180  / (radiani * math.pi)
+        else:
+            kosinus_kota = self.skalarni_produkt(other) / (self.norma() * other.norma())
+            radiani = math.acos(kosinus_kota)
+            stopinje = radiani * 180 / math.pi
+            return stopinje
     
     def ploščina_paralelograma(self, other):
-    # izračuna ploščino, ki ga omejujeta vektorja self in other 
-        return math.sin(self.kot(other)) * self.norma() * other.norma()
+    # Izračuna ploščino, ki ga omejujeta self.vektor in other.vektor . 
+        if self.smo_v_treh_dimenzijah(other):
+            kot = math.sin(self.kot(other) * math.pi / 180) 
+            rezultat = kot * self.norma() * other.norma()
+            return rezultat
+        else:
+            raise Exception("Vektorski morata imeti tri komponente.")
 
     def volumen_paralelepipeda(self, other, tretji):
-    # izračuna volumen paraleliepipeda, ki ga omejuje trije vektorji
-        return self.ploščina_paralelograma(other) * tretji.norma()
-    
-    def volumen_piramide(self, other, tretji):
-        return self.volumen_paralelepipeda(other, tretji) / 6
+    # Izračuna volumen paraleliepipeda, ki ga omejuje trije vektorji.
+        if self.smo_v_treh_dimenzijah(other) and len(tretji) == 3:
+            return self.ploščina_paralelograma(other) * tretji.norma()
+        else:
+            raise Exception("Vektorski morata imeti tri komponente.")
 
-    def enacba_premice(self, tocka):
-    # enačba premice s smernim vekotrem self, ki gre skozi točko "tocka"
-        if self.stevilovrstic == 3 and len(tocka) == 3:
-            return f'(x - {tocka[0]}) / {self.vektor[0]} = (y - {tocka[1]}) / {self.vektor[1]} = (z - {tocka[2]}) / {self.vektor[2]}'
+    def volumen_piramide(self, other, tretji):
+        if self.smo_v_treh_dimenzijah(other) and len(tretji) == 3:
+            return self.volumen_paralelepipeda(other, tretji) / 6
+        else:
+            raise Exception("Vektorski morata imeti tri komponente.")
+
+    def enacba_premice(self, other):
+    # Ennačna premice s smernim vekotrem self, ki gre skozi točko "other".
+        if self.smo_v_treh_dimenzijah(other):
+            return f'(x - {other[0]}) / {self[0]} = (y - {other[1]}) / {self[1]} = (z - {other[2]}) / {self[2]}'
         else:
             raise Exception("Vektor in točka morata imate oba 3 komponente")
 
+# Class Matrika je namenjen računajnju z matrikami.
 
 class Matrika:
 
@@ -154,12 +185,7 @@ class Matrika:
         for vrstica in self.matrika:
             mat += str(vrstica) + '\n'
         return mat
-    '''    vr = ""
-            for element in vrstica:
-                element = str(element)
-                vr += element + ' '
-            mat += str(vr) + '\n' '''
-
+            
     def __getitem__(self, i):
         return self.matrika[i]
 
@@ -172,10 +198,12 @@ class Matrika:
     def __add__(self, other):
         if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
             vsota = []
-            for i in range(self.stevilovrstic):
+            m = self.stevilovrstic
+            n = self.stevilostolpcev
+            for i in range(m):
                 pomozna = []
-                for j in range(self.stevilostolpcev):
-                    pomozna.append(self.matrika[i][j] + other.matrika[i][j])
+                for j in range(n):
+                    pomozna.append(self[i][j] + other[i][j])
                 vsota.append(pomozna)
             return Matrika(vsota)
         else:
@@ -184,10 +212,12 @@ class Matrika:
     def __sub__(self, other):
         if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
             razlika = []
-            for i in range(self.stevilovrstic):
+            m = self.stevilovrstic
+            n = self.stevilostolpcev
+            for i in range(m):
                 pomozna = []
-                for j in range(self.stevilostolpcev):
-                    pomozna.append(self.matrika[i][j] - other.matrika[i][j])
+                for j in range(n):
+                    pomozna.append(self[i][j] - other[i][j])
                 razlika.append(pomozna)
             return Matrika(razlika)
         else:
@@ -198,10 +228,12 @@ class Matrika:
 
     def __lt__(self, other):
         if self.stevilostolpcev == other.stevilostolpcev and self.stevilovrstic == other.stevilovrstic:
-            for i in range(len(self.matrika)):
+            m = self.stevilovrstic
+            n = self.stevilostolpcev
+            for i in range(m):
                 seznam = []
-                for j in range(len(self.matrika[0])):
-                    if self.matrika[i][j] > other.matrika[i][j]:
+                for j in range(n):
+                    if self[i][j] > other[i][j]:
                         seznam.append(True)
                     else:
                         seznam.append(False)
@@ -212,15 +244,15 @@ class Matrika:
     def __mul__(self, other):
     # Množenje s skalarjem
         if isinstance(other, (int, float)):
-            zmnozek = []
+            produkt = []
             m = self.stevilovrstic
             n = self.stevilostolpcev
             for i in range(m):
                 vrstica = []
                 for j in range(n):
-                    vrstica.append(self.matrika[i][j] * other)
-                zmnozek.append(vrstica)
-            return Matrika(zmnozek)
+                    vrstica.append(self[i][j] * other)
+                produkt.append(vrstica)
+            return Matrika(produkt)
 
     # Množenje matrik 
         elif isinstance(other, Matrika):
@@ -228,8 +260,8 @@ class Matrika:
                 return Matrika( 
                 [[sum(x * y for x,y in zip(self.stevilovrstic, other.stevilostolpcev)) 
                 for other.stevilostolpcev in zip(*other)] for self.stevilovrstic in self])
-        else:
-            raise Exception("Matrik se ne more zmnožiti.")
+            else:
+                raise Exception("Matrik se ne more zmnožiti.")
 
     def kvadratna(self):
         return self.stevilostolpcev == self.stevilovrstic 
@@ -237,18 +269,21 @@ class Matrika:
     def sled(self):
         if self.kvadratna():
             trace = 0
-            for i in range(self.stevilovrstic):
-                trace += self.matrika[i][i]
+            n = self.stevilostolpcev
+            for i in range(n):
+                trace += self[i][i]
             return trace
         else:
             raise Exception("Sled je definirana le za kvadratne matrike.")
     
     def transponiranje(self):
         transponiranka = []
-        for i in range(self.stevilostolpcev):
+        m = self.stevilovrstic
+        n = self.stevilostolpcev
+        for i in range(n):
             vrstica = []
-            for j in range(self.stevilovrstic):
-                vrstica.append(self.matrika[j][i])
+            for j in range(m):
+                vrstica.append(self[j][i])
             transponiranka.append(vrstica)
         return Matrika(transponiranka)
 
@@ -265,15 +300,13 @@ class Matrika:
             return True
     
     def determinante(self):
-    # Determinanto bomo izračunali s pomočjo razvoja 
-    # Za to uporabimo rekurzivno zvezo
-
         if not self.kvadratna():
             raise Exception("Determinanta pravokotnih matrik ni definirana.")
         elif self.stevilovrstic == 1:
-            return self.matrika[0][0]
+            return self[0][0]
         elif self.stevilovrstic == 2:
-            return self.matrika[1][1] * self.matrika[0][0] - self.matrika[1][0] * self.matrika[0][1]
+            determinanta = self[1][1] * self[0][0] - self[1][0] * self[0][1]
+            return determinanta
         else:
             M = self.matrika
             determinanta = 0
@@ -314,24 +347,12 @@ class Matrika:
     
     def psevdoinverz(self):
     # posplošitev inverza za matrike, za katere je AA^T obrnljiva matrika 
-        m =  Matrika(self.matrika)  * self.transponiranje()
+        m =  Matrika(self)  * self.transponiranje()
         if m.singularnost_matrike():
             raise Exception("Psevdo-inverz take matrike ne znam izračunati.")
         else:
             n = m.inverz() * self.transponiranje()
             return Matrika(n)
-
-    def metoda_najmanjsih_kvadratov(self, b , y):
-    # izračuna neko rešitev sistema po metodi najmanjših kvadratov
-    # Sistem Ax = b, kjer je AA^T obrnljiva matrika
-        if self.singularnost_matrike():
-            return Exception("Takega sistema ne znam rešiti.")
-        elif len(b) != self.stevilovrstic:
-            raise Exception("Dolžine se ne ujemajo")
-        elif len(y) != self.stevilostolpcev:
-            raise Exception("Dolžine se ne ujemajo. ")
-        else:
-            return self.psevdoinverz() * b + (identiteta(self.stevilovrstic) - self.psevdoinverz() * self.matrika) * y
 
     def __pow__(self, k):
     # Matriko mnozico samo s sabo k - krat, kjer je k naravno število, sicer
@@ -397,14 +418,15 @@ class Matrika:
             return True
 
     def cramerjevo_pravilo(self, b):
-    # Naj bo A matrika, ki predstavlja sistem n enančb z n neznakami, če je A nesingularna lahko uporabimo sledeč postopek za izračun rešitve sistema
+    # Naj bo A matrika, ki predstavlja sistem n enančb z n neznakami, če je A nesingularna lahko uporabimo sledeč postopek za izračun rešitve sistema.
         if self.singularnost_matrike():
             raise Exception("Matrika more biti obrnljiva, sicer sistem ni enolično rešljiv")
         elif len(b) != self.stevilovrstic:
             raise Exception("Dolžina vektorja b se mora ujemati s število vrstic oz. številom stolpcem matirike A!")
         else: 
             resitev = []
-            for u in range(self.stevilostolpcev):
+            n = self.stevilostolpcev
+            for u in range(n):
                 M = self.transponiranje()
                 M = M[:u] + [b] + M[(u + 1):]
                 M = Matrika(M)
@@ -446,12 +468,11 @@ def nicelna(n):
         matrika.append(vrstica)
     return Matrika(matrika)
 
+# Class Permutacija je namenjen računanju s permutacijami.
+
 class Permutacija:
 
     def __init__(self, permutacija={}):
-        ''' Permutacija bo predstavljala poljuben slovar, ki je permutacija (uporabnik jo natipka)
-        Velikost je neodvisna od permutacije in bo omogačala, da uporabnik dobi vse permutacije
-        dolžine n. Torej dobi množico Sn, za nek n element naravnih števil.'''
         self.permutacija = permutacija
 
     def __repr__(self):
@@ -461,11 +482,10 @@ class Permutacija:
         return f'{(self.permutacija)}'
 
     def __len__(self):
-     # vrne dolzino permutacije
         return len(self.permutacija)
     
     def preverjanje_permutacije(self):
-    # Preveri ali je seznam permutacija ! To potem shrani v vrednost slef.jepermutacija
+    # Preveri ali je slovar permutacija.
         if set(self.permutacija.keys()) == set(range(1, len(self.permutacija.keys()) + 1)):
             if set(self.permutacija.values()) == set(self.permutacija.keys()):
                 return True
@@ -486,7 +506,7 @@ class Permutacija:
             return Permutacija(produkt)
         
     def enkratna_slika_permutacije(self, k):
-    # vrne m - ti elemnt permutacije 
+    # Vrne m - ti elemnt permutacije. 
         if float(k) > len(self):
             raise Exception("Število k mora biti kvečjemu število k!")
         elif float(k) % 1 != 0 or float(k) < 0:
@@ -497,7 +517,7 @@ class Permutacija:
             return self.permutacija.get(int(k))
 
     def veckratno_slikanje_permutacije(self, k, r):
-    # vrne zaporedje slik po r - kratnem slikanju k - tega elementa.
+    # Vrne zaporedje slik po r - kratnem slikanju k - tega elementa.
         if float(r) < 0 or float(r) % 1 != 0:
             raise Exception("Število r mora biti naravno število!")
         elif not self.preverjanje_permutacije():
@@ -517,7 +537,7 @@ class Permutacija:
         return self.veckratno_slikanje_permutacije(k, r)[-1]
 
     def cikel_v_permutaciji(self, m):
-    # Vrne cikel začenši z m
+    # Vrne cikel začenši z m.
         if float(m) < 0 or float(m) % 1 != 0:
             raise Exception("Število r mora biti naravno število!") 
         if float(m) > len(self):
@@ -533,7 +553,7 @@ class Permutacija:
         return seznam
         
     def cikli_v_permutaciji(self):
-    # vrne vse cikle v permutaciji
+    # Vrne vse cikle v permutaciji.
         if not self.preverjanje_permutacije():
             raise Exception("Vpis mora biti permutacija.")
         cikli = []
@@ -553,16 +573,33 @@ class Permutacija:
             inverz[self.permutacija.get(value)] = value
         return Permutacija(inverz)
 
-   
+    def inverzije(self):
+        if not self.preverjanje_permutacije:
+            raise Exception("Vpis mora biti permutacija.")
+        else:
+            st_inverzij = 0
+            for i in range(len(self)):
+                for j in range(len(self)):
+                    if list_kljucev(self.permutacija)[j] > list_kljucev(self.permutacija)[i]:
+                        if self.permutacija.get(i + 1) > self.permutacija.get(j + 1):
+                            st_inverzij += 1
+        return st_inverzij
 
-def sn(n):
+    def signatura(self):
+        sg = (-1) ** (self.inverzije())
+        return sg
+
+def list_kljucev(slovar):
+    return list(slovar.keys())
+
+def množica_bijektivnih_preslikav(n):
 # vrne množico Sn t.j. vse bijektic.
     if int(n) == 0:
         return {()}
     elif float(n) < 0 or float(n) % 1 != 0:
         raise Exception("Število n mora biti naravno.")
     else:
-        sedajsne_per = sn(int(n) - 1)
+        sedajsne_per = množica_bijektivnih_preslikav(int(n) - 1)
         novejse_per = set()
         for permutacija in sedajsne_per:
             for i in range(len(permutacija) + 1):

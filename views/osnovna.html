@@ -34,32 +34,8 @@
         font-size: 35px; 
         padding-top: 10px; 
         padding-bottom: 40px}
-    h3  {font-family:"Montserrat", sans-serif; 
-        font-size: 30px; 
-        padding-top: 10px;}
-    h5 {font-family:"Montserrat", sans-serif;
-        font-size: 25px; 
-        padding-top: 10px;}
-    h4 {font-family: "Montserrat", sans-serif; 
-        font-size: 20px; 
-        padding-top: 10px; }
     ul{display: table;
       margin: 0 auto;}
-    button {
-      border: none;
-      color: blue;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;}
-    footer {font-family: "Montserrat", sans-serif;
-            position: absolute; 
-            bottom: 0; 
-            width: 100%; 
-            height: 2.5rem;}
     #overlay {position: fixed; z-index: 1;}
 </style>
 </head>
@@ -67,7 +43,7 @@
 
         <div class="container">
 
-            <div class="mx-auto" align="center" style="width: 300px;">
+            <div class="mx-auto" align="center" style="width: 200px;">
               <h1><a href="/" style="color: #a414b1e0;">Permavulator!</a></h1>
               </div>
             
@@ -75,7 +51,7 @@
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
               <!-- Subdivizija za vektorje -->
               <div class="btn-group-vertical" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", color: white;>
+                <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
                     Vektorji!
                 </button>
                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -84,7 +60,7 @@
                     <a href="/izenaciv" class="btn btn-secondary">izenači</a>
                     <a href="/primerjajv" class="btn btn-secondary">primerjaj</a>
                     <a href="/norm" class="btn btn-secondary">dolžina</a>
-                    <a href="/skalarniprodukt" class="btn btn-secondary">sklarano zmnoži</a>
+                    <a href="/skalarniprodukt" class="btn btn-secondary">skalarano zmnoži</a>
                     <a href="/kot" class="btn btn-secondary">kot</a>
                     <a href="/vektorskiprodukt" class="btn btn-secondary">vektorski produkt</a>
                     <a href="/ploscinaparlalograma" class="btn btn-secondary">ploščina paralelograma</a>
@@ -95,10 +71,10 @@
             </div>
               <!-- Subdivizija za računanje z matrikami. -->
               <div class="btn-group-vertical" role="group">
-                <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
                     Računanje z matrikami!
                 </button>
-                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
                     <a href="/sestevanjem" class="btn btn-secondary">seštej</a>       
                     <a href="/odstevanjem" class="btn btn-secondary">odštej</a> 
                     <a href="/izenacim" class="btn btn-secondary">izenači</a>
@@ -115,10 +91,10 @@
             </div> 
               <!-- Subdivizija za lastnosti matrik -->
               <div class="btn-group-vertical" role="group">
-                <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
                         Značaji matrik!
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop3">
                       <a class="dropdown-item" href="/dvojnostohasticna">dvojnostohastičnost matrika</a>
                       <a class="dropdown-item" href="/permutacijskaa">permutacijska matrika</a>
                       <a class="dropdown-item" href="/nenegativnost">nenegativnost matirke</a>
@@ -131,22 +107,35 @@
 
               <!-- Subdivizija za permutacije.  -->
               <div class="btn-group-vertical" role="group">
-                <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Permutacije :) !
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <a href="/preverjanjepermutacije" class="btn btn-secondary">ali je permutacija?</a>                      
-                    <a href="/enkratnaslikapermutacije" class="btn btn-secondary">slika elementa</a>  
-                    <a href="/veckratnaslikapermutacije" class="btn btn-secondary">večkratna slika elementa</a> 
-                    <a href="/elemntpoveckrantenemslikanjupermutacije" class="btn btn-secondary">element po večkratneem slikanju</a> 
-                    <a href="/snn" class="btn btn-secondary">množica bijektivnoih preslikav</a>  
-                    <a href="/cikel" class="btn btn-secondary">cikel v permutaciji</a>  
-                    <a href="/cikli" class="btn btn-secondary">cikeli v permutaciji</a>  
-                    <a href="/inverzz" class="btn btn-secondary">inverz</a>  
-                    <a href="/produktp" class="btn btn-secondary">produkt</a>  
+                <button id="btnGroupDrop4" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
+                        Permutacije :) !
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop4">
+                      <a href="/preverjanjepermutacije" class="btn btn-secondary">ali je permutacija?</a>                      
+                      <a href="/enkratnaslikapermutacije" class="btn btn-secondary">slika elementa</a>  
+                      <a href="/elemntpoveckrantenemslikanjupermutacije" class="btn btn-secondary">element po večkratneem slikanju</a> 
+                      <a href="/snn" class="btn btn-secondary">množica bijektivnoih preslikav</a>  
+                      <a href="/cikel" class="btn btn-secondary">cikel v permutaciji</a>  
+                      <a href="/cikli" class="btn btn-secondary">cikli v permutaciji</a>  
+                      <a href="/inverzz" class="btn btn-secondary">inverz</a>  
+                      <a href="/produktp" class="btn btn-secondary">produkt</a>  
+                      <a href="/inverzije" class="btn btn-secondary">inverzije</a>
+                      <a href="/signatura" class="btn btn-secondary">signatura</a>  
+                    </div>
                 </div>
-              </div> 
-    
+            <!-- Subdivizija za zgodovino -->
+            <div class="btn-group-vertical" role="group">
+              <button id="btnGroupDrop5" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+                    Zgodovina!
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop5">
+                    <a class="dropdown-item" href="/zgodovinamat">zgodovina matrik</a>
+                    <a class="dropdown-item" href="/zgodovinavek">zgodovina vektorjev</a>
+                    <a class="dropdown-item" href="/zgodovinaper">zgodovina permutacij</a>
+                  </div>
+              </div>
+
+
             </div>
             </div>
 

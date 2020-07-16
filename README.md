@@ -1,12 +1,16 @@
 # Permavulator
 
-Moj projekt pri predmetku Uvod v programiranje v sklopu 1. letnkika na programu finančna matematika na Fakulteti za matematiko in fiziko je sledeč.
+Moj projekt pri predmetku **Uvod v programiranje** v sklopu 1. letnkika na študijskem programu Finančna matematika na Fakulteti za matematiko in fiziko je 
+kalkulator za računanje z vektorji, matrikami in permutacijami. Spletni vmesnik je narejen s pomočjo knjižnice [bottle](https://bottlepy.org/docs/dev/).
 
-Permavulatro omogoča računanje z vektori, matrikami in permutacijami.
+Izračuna lahko veliko stvari s katerimi se zagotovo sreča vsak študent, ki študira matematiko ali fiziko kot so:
+vektorski produkt, produkt matrik, determinanto matrike, število inverzij permutacije in mnogo drugih.
+Omogoča tudi preverjanje nekaterih lastnosti matrik kot so dvojna stohastičnost in ali je matrika permutacijska.
 
-Izračunati zna veliko stvari s katerimi se zagotovo sreča vsak študent, ki študira matematiko ali fiziko kot so:
-vektorski produkt, kot med vektorjema, produkt matrik, determinanto matrik, najde ciklel v permutaciji in moge druge.
-Omogoča tudi preverjanje nekaterih lastnosti matrik kot so dvojna stohastičnost, ali je matrika permutacijska itd.
-Zna podati tudi rešitev sistem pa metodi najmanjših kvadratov s pomočjo psevdoinverza matrike.
+Navodila za uporabo kalkulatorja so na začetni strani spletnega vmesnika. 
 
-Program je najrejen brez pomoči knjižnic kot so itertools in podobnih, ki omogočajo računanje s permutacijami bodisi z matrikami.
+Strežnik poženite z:
+
+    $ python spletni.py runserver
+
+Spletni vmesnik je lociran na [naslovu](http://127.0.0.1:8080/) .
