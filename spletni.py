@@ -600,7 +600,7 @@ def elemntpoveckrantenemslikanjupermutacijep():
 
 @bottle.get("/snn")
 def snn():
-    return bottle.template("enojnivektor.html", ime="naravno število, za katero želiš množico bijektivnih preslikav", 
+    return bottle.template("enojnivektor.html", ime="naravno število, za katerega želite množico bijektivnih preslikav", 
             operacija="/snp", izracunaj="bijekcije")
 
 @bottle.post("/snp")
@@ -626,7 +626,7 @@ def cikelp():
 
 @bottle.get("/cikli")
 def cikli():
-    return bottle.template("enojnivektor.html", ime="Vpiši permutacijo", operacija="/ciklip", izracunaj="Cikli")
+    return bottle.template("enojnivektor.html", ime="permutacijo", operacija="/ciklip", izracunaj="Cikli")
 
 
 @bottle.post("/ciklip")
